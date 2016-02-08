@@ -6,7 +6,7 @@ import config from 'travis/config/environment';
 export default Ember.Component.extend({
   routing: Ember.inject.service('-routing'),
   tagName: 'li',
-  classNameBindings: ['build.last_build.state'],
+  classNameBindings: ['build.lastBuild.state'],
   classNames: ['branch-row', 'row-li'],
   isLoading: false,
   isTriggering: false,
@@ -23,11 +23,11 @@ export default Ember.Component.extend({
       isLoading: true,
       count: 0
     });
-    if (!this.get('build.last_build')) {
+    if (!this.get('build.lastBuild')) {
       lastBuilds.set('isLoading', false);
     } else {
       apiEndpoint = config.apiEndpoint;
-      repoId = this.get('build.repository.id');
+      repoId = this.get('build.repo.id');
       branchName = this.get('build.name');
       options = {};
       if (this.get('auth.signedIn')) {
@@ -59,7 +59,7 @@ export default Ember.Component.extend({
       return false;
     } else {
       permissions = this.get('auth.currentUser.permissions');
-      if (permissions.contains(parseInt(this.get('build.repository.id')))) {
+      if (permissions.contains(parseInt(this.get('build.repo.id')))) {
         return true;
       } else {
         return false;

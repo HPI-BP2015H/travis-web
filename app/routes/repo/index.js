@@ -41,7 +41,7 @@ export default TravisRoute.extend({
     } else if(!controller.get('repo.lastBuildId')) {
       this.render('repo/no-build');
     } else {
-      this.render('build');
+      this.render('overview');
     }
   }
 });
