@@ -7,10 +7,9 @@ export default Ember.Controller.extend({
   repoBinding: 'repoController.repo',
 
   defaultBranch: function() {
-    var result, apiEndpoint, options, repoId, branchName;
+    var result, apiEndpoint, options, repoId;
     apiEndpoint = config.apiEndpoint;
     repoId = this.get('repo.id');
-    branchName = this.get('repo.defaultBranch.name');
     result = Ember.ObjectProxy.create();
     options = {};
     if (this.get('auth.signedIn')) {
@@ -18,8 +17,9 @@ export default Ember.Controller.extend({
         Authorization: "token " + (this.auth.token())
       };
     }
-    $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/branch/" + branchName + "?include=build.commit", options).then(function(response) {
-      return result.set('content', Ember.Object.create(response));
+    $.ajax(apiEndpoint + "/v3/repo/" + repoId + "?include=repository.default_branch,build.commit", options).then(function(response) {
+      response.default_branch.repository.id = response.id;
+      return result.set('content', Ember.Object.create(response.default_branch));
     });
     return result;
   }.property('repo')
