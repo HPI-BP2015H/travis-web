@@ -5,8 +5,8 @@ export default Ember.Component.extend({
   classNames: ['tabnav'],
   ariaRole: 'tablist',
 
-  classCurrent: function() {
-    if (this.get('tab') === 'current') {
+  classOverview: function() {
+    if (this.get('tab') === 'overview') {
       return 'active';
     }
   }.property('tab'),

@@ -72,13 +72,11 @@ export default Ember.Controller.extend({
   },
 
   viewIndex() {
-    this.observeLastBuild();
-    return this.connectTab('current');
+    return this.connectTab('overview');
   },
 
-  viewCurrent() {
-    this.observeLastBuild();
-    return this.connectTab('current');
+  viewOverview() {
+    return this.connectTab('overview');
   },
 
   viewBuilds() {
@@ -137,8 +135,6 @@ export default Ember.Controller.extend({
   },
 
   connectTab(tab) {
-    var name;
-    name = tab === 'current' ? 'build' : tab;
     return this.set('tab', tab);
   },
 
