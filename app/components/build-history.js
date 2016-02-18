@@ -53,6 +53,31 @@ export default Ember.Component.extend({
 
     var data = [
       {
+        date: '2015-02-16',
+        passed: 3,
+        failed: 5,
+      },
+      {
+        date: '2015-02-15',
+        passed: 7,
+        failed: 2,
+      },
+      {
+        date: '2015-02-14',
+        passed: 11,
+        failed: 1,
+      },
+      {
+        date: '2015-02-13',
+        passed: 10,
+        failed: 3,
+      },
+      {
+        date: '2015-02-12',
+        passed: 19,
+        failed: 7,
+      },
+      {
         date: '2015-02-11',
         passed: 3,
         failed: 5,
@@ -66,14 +91,12 @@ export default Ember.Component.extend({
         date: '2015-02-09',
         passed: 11,
         failed: 1,
-      }
-      ,
+      },
       {
         date: '2015-02-08',
         passed: 10,
         failed: 3,
-      }
-      ,
+      },
       {
         date: '2015-02-07',
         passed: 19,
@@ -82,15 +105,17 @@ export default Ember.Component.extend({
     ];
 
 
-    var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 600 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    var margin = {top: 20, right: 20, bottom: 30, left: 40}
+      , fullWidth = 1000
+      , fullHeight = 200
+      , marginWidth = fullWidth - margin.left - margin.right
+      , marginHeight = fullHeight - margin.top - margin.bottom;
 
     var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], 0.1);
+    .rangeRoundBands([0, marginWidth], 0.1);
 
     var y = d3.scale.linear()
-    .range([height, 0]);
+    .range([marginHeight, 0]);
 
     var xAxis = d3.svg.axis()
     .scale(x)
@@ -101,9 +126,15 @@ export default Ember.Component.extend({
     .orient("left")
     .ticks(yTicks(data));
 
-    var svg = d3.select(".build-history").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    var svg = d3.select(".build-history")
+    .append("div")
+    .classed("svg-container", true)
+    .append("svg")
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 " + fullWidth + " " + fullHeight)
+    .classed("svg-content-responsive", true)
+    //.attr("width", marginWidth + margin.left + margin.right)
+    //.attr("height", marginHeight + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -112,7 +143,7 @@ export default Ember.Component.extend({
 
     svg.append("g")
     .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
+    .attr("transform", "translate(0," + marginHeight + ")")
     .call(xAxis);
 
     svg.append("g")
@@ -132,7 +163,7 @@ export default Ember.Component.extend({
     .attr("x", function(d) { return x(d.date); })
     .attr("width", x.rangeBand())
     .attr("y", function(d) { return y(d.passed); })
-    .attr("height", function(d) { return height - y(d.passed); });
+    .attr("height", function(d) { return marginHeight - y(d.passed); });
 
     svg.selectAll(".failed")
     .data(data)
@@ -140,7 +171,7 @@ export default Ember.Component.extend({
     .attr("class", "failed")
     .attr("x", function(d) { return x(d.date); })
     .attr("width", x.rangeBand())
-    .attr("y", function(d) { return y(d.failed) + y(d.passed) -height; })
-    .attr("height", function(d) { return height - y(d.failed); });
+    .attr("y", function(d) { return y(d.failed) + y(d.passed) -marginHeight; })
+    .attr("height", function(d) { return marginHeight - y(d.failed); });
   }
 });
