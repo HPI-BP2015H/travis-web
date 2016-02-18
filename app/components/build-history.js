@@ -10,7 +10,9 @@ export default Ember.Component.extend({
         var current = {
           date: (new Date(date)).toLocaleDateString(),
           passed: 0,
+          // TODO: started
           failed: 0
+          // TODO: errored
         };
         if(json.recent_build_history[date].passed) {
           current.passed = json.recent_build_history[date].passed;
@@ -55,61 +57,71 @@ export default Ember.Component.extend({
       {
         date: '2015-02-16',
         passed: 3,
+        started: 2,
         failed: 5,
       },
       {
         date: '2015-02-15',
         passed: 7,
+        started: 2,
         failed: 2,
       },
       {
         date: '2015-02-14',
         passed: 11,
+        started: 2,
         failed: 1,
       },
       {
         date: '2015-02-13',
         passed: 10,
+        started: 0,
         failed: 3,
       },
       {
         date: '2015-02-12',
         passed: 19,
+        started: 0,
         failed: 7,
       },
       {
         date: '2015-02-11',
         passed: 3,
+        started: 0,
         failed: 5,
       },
       {
         date: '2015-02-10',
         passed: 7,
+        started: 0,
         failed: 2,
       },
       {
         date: '2015-02-09',
         passed: 11,
+        started: 0,
         failed: 1,
       },
       {
         date: '2015-02-08',
         passed: 10,
+        started: 0,
         failed: 3,
       },
       {
         date: '2015-02-07',
         passed: 19,
+        started: 0,
         failed: 7,
       }
     ];
 
 
     var margin = {top: 20, right: 20, bottom: 30, left: 40}
-      , fullWidth = 1000
-      , fullHeight = 200
-      , marginWidth = fullWidth - margin.left - margin.right
-      , marginHeight = fullHeight - margin.top - margin.bottom;
+    , fullWidth = 1000
+    , fullHeight = 200
+    , marginWidth = fullWidth - margin.left - margin.right
+    , marginHeight = fullHeight - margin.top - margin.bottom;
 
     var x = d3.scale.ordinal()
     .rangeRoundBands([0, marginWidth], 0.1);
@@ -165,13 +177,27 @@ export default Ember.Component.extend({
     .attr("y", function(d) { return y(d.passed); })
     .attr("height", function(d) { return marginHeight - y(d.passed); });
 
+    svg.selectAll(".started")
+    .data(data)
+    .enter().append("rect")
+    .attr("class", "started")
+    .attr("x", function(d) { return x(d.date); })
+    .attr("width", x.rangeBand())
+    .attr("y", function(d) { return y(d.started) + y(d.passed) - marginHeight; })
+    .attr("height", function(d) { return marginHeight - y(d.started); });
+
     svg.selectAll(".failed")
     .data(data)
     .enter().append("rect")
     .attr("class", "failed")
     .attr("x", function(d) { return x(d.date); })
     .attr("width", x.rangeBand())
-    .attr("y", function(d) { return y(d.failed) + y(d.passed) -marginHeight; })
-    .attr("height", function(d) { return marginHeight - y(d.failed); });
-  }
-});
+    .attr("y", function(d) {
+      return (
+        y(d.failed)
+        + y(d.started) - marginHeight
+        + y(d.passed) - marginHeight);
+      })
+      .attr("height", function(d) { return marginHeight - y(d.failed); });
+    }
+  });
