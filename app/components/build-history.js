@@ -31,7 +31,8 @@ export default Ember.Component.extend({
 
       $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/build_history", options)
       .then(function(response) {
-        drawChart(cleanData(response));
+        //drawChart(cleanData(response));
+        drawChart(cleanData(json));
       });
     }
 
@@ -84,11 +85,16 @@ export default Ember.Component.extend({
       "@href": "/v3/repo/#{repo.id}/overview/build_history",
       "@representation": "standard",
       "recent_build_history": {
-        '2016-02-11': {
-          'failed': 1
+        '2016-02-22': {
+          'failed': 1,
+          'started': 1,
+          'queued': 1,
+          'canceled': 2
         },
-        '2007-02-10': {
-          'passed': 1
+        '2016-02-20': {
+          'passed': 1,
+          'failed': 2,
+          'errored': 3
         }
       }
     };
@@ -128,7 +134,13 @@ export default Ember.Component.extend({
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       x.domain(data.map(function(d) { return d.date; }));
-      y.domain([0, d3.max(data, function(d) { return d.passed + d.failed; })]);
+      y.domain([0, d3.max(data, function(d) {
+        var result = 0;
+        for(var i=0; i<statuses.length; i++) {
+          result += d[statuses[i]];
+        }
+        return result;
+      })]);
 
       svg.append("g")
       .attr("class", "x axis")
@@ -145,37 +157,25 @@ export default Ember.Component.extend({
       .style("text-anchor", "end")
       .text("builds");
 
-      svg.selectAll(".passed")
-      .data(data)
-      .enter().append("rect")
-      .attr("class", "passed")
-      .attr("x", function(d) { return x(d.date); })
-      .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(d.passed); })
-      .attr("height", function(d) { return marginHeight - y(d.passed); });
-
-      svg.selectAll(".started")
-      .data(data)
-      .enter().append("rect")
-      .attr("class", "started")
-      .attr("x", function(d) { return x(d.date); })
-      .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(d.started) + y(d.passed) - marginHeight; })
-      .attr("height", function(d) { return marginHeight - y(d.started); });
-
-      svg.selectAll(".failed")
-      .data(data)
-      .enter().append("rect")
-      .attr("class", "failed")
-      .attr("x", function(d) { return x(d.date); })
-      .attr("width", x.rangeBand())
-      .attr("y", function(d) {
-        return (
-          y(d.failed) +
-          y(d.started) - marginHeight +
-          y(d.passed) - marginHeight);
+      var drawnStatuses = [];
+      for(var i=0; i<statuses.length; i++) {
+        svg.selectAll("." + statuses[i])
+        .data(data)
+        .enter().append("rect")
+        .attr("class", statuses[i])
+        .attr("x", function(d) { return x(d.date); })
+        .attr("width", x.rangeBand())
+        .attr("y", function(d) {
+          var result = y(d[statuses[i]]);
+          for(var j=0; j<drawnStatuses.length; j++) {
+            result += y(d[drawnStatuses[j]]) - marginHeight;
+          }
+          return result;
         })
-        .attr("height", function(d) { return marginHeight - y(d.failed); });
+        .attr("height", function(d) { return marginHeight - y(d[statuses[i]]); });
+
+        drawnStatuses.push(statuses[i]);
       }
     }
-  });
+  }
+});
