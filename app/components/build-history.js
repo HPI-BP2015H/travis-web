@@ -141,11 +141,13 @@ export default Ember.Component.extend({
         return result;
       })]);
 
+      // add x axis
       svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + marginHeight + ")")
       .call(xAxis);
 
+      // add y axis
       svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
@@ -157,22 +159,34 @@ export default Ember.Component.extend({
       .style("text-anchor", "middle")
       .text("builds");
 
+      // helper functions to avoid defintion in loop
+      var xAttr = function(d) {
+        return x(d.date);
+      };
+
+      var yAttr = function(d) {
+        var result = y(d[statuses[i]]);
+        for(var j=0; j<drawnStatuses.length; j++) {
+          result += y(d[drawnStatuses[j]]) - marginHeight;
+        }
+        return result;
+      };
+
+      var heightAttr = function(d) {
+        return marginHeight - y(d[statuses[i]]);
+      };
+
+      // add bars for every status
       var drawnStatuses = [];
       for(var i=0; i<statuses.length; i++) {
         svg.selectAll("." + statuses[i])
         .data(data)
         .enter().append("rect")
         .attr("class", statuses[i])
-        .attr("x", function(d) { return x(d.date); })
+        .attr("x", xAttr)
         .attr("width", x.rangeBand())
-        .attr("y", function(d) {
-          var result = y(d[statuses[i]]);
-          for(var j=0; j<drawnStatuses.length; j++) {
-            result += y(d[drawnStatuses[j]]) - marginHeight;
-          }
-          return result;
-        })
-        .attr("height", function(d) { return marginHeight - y(d[statuses[i]]); });
+        .attr("y", yAttr)
+        .attr("height", heightAttr);
 
         drawnStatuses.push(statuses[i]);
       }
