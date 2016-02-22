@@ -4,6 +4,8 @@ import config from 'travis/config/environment';
 
 export default Ember.Component.extend({
   didInsertElement: function() {
+    apiQuery(this);
+
     var maxYTicks = 5;
     var daysToDisplay = 10;
     var statuses = [
@@ -61,7 +63,6 @@ export default Ember.Component.extend({
             }
           }
         }
-
         // append to result
         result.push(current);
       }
@@ -86,23 +87,21 @@ export default Ember.Component.extend({
       "@representation": "standard",
       "recent_build_history": {
         '2016-02-22': {
-          'failed': 1,
-          'started': 1,
-          'queued': 1,
-          'canceled': 2
+          'failed': 10,
+          'started': 10,
+          'queued': 10,
+          'canceled': 20
         },
         '2016-02-20': {
-          'passed': 1,
-          'failed': 2,
-          'errored': 3
+          'passed': 10,
+          'failed': 20,
+          'errored': 30
         }
       }
     };
 
-    apiQuery(this);
-
     function drawChart(data) {
-      var margin = {top: 20, right: 20, bottom: 30, left: 40},
+      var margin = {top: 20, right: 20, bottom: 30, left: 60},
       fullWidth = 1000,
       fullHeight = 200,
       marginWidth = fullWidth - margin.left - margin.right,
@@ -151,10 +150,11 @@ export default Ember.Component.extend({
       .attr("class", "y axis")
       .call(yAxis)
       .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
+      .attr("transform", "rotate(90)")
+      .attr("y", 30)
+      .attr("x", 0.5*marginHeight)
+      .attr("dy", "1.5em")
+      .style("text-anchor", "middle")
       .text("builds");
 
       var drawnStatuses = [];
