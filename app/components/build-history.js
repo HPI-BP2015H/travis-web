@@ -173,7 +173,9 @@ export default Ember.Component.extend({
       };
 
       var heightAttr = function(d) {
-        return marginHeight - y(d[statuses[i]]);
+        var result = marginHeight - y(d[statuses[i]]);
+        result = result > 0 ? result + 1 : 0; // to avoid white lines
+        return result;
       };
 
       // add bars for every status
