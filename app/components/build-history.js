@@ -188,7 +188,9 @@ export default Ember.Component.extend({
         .attr("x", xAttr)
         .attr("width", x.rangeBand())
         .attr("y", yAttr)
-        .attr("height", heightAttr);
+        .attr("height", heightAttr)
+        .on("mouseover", function() { console.log("mouseover triggered"); })
+        .on("mouseout", function() { console.log("mouseout triggered"); });
 
         drawnStatuses.push(statuses[i]);
       }
