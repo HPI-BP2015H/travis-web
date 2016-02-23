@@ -178,6 +178,26 @@ export default Ember.Component.extend({
         return result;
       };
 
+      var barMouseOver = function() {
+        var x = parseFloat(d3.select(this).attr("x"));
+        var y = parseFloat(d3.select(this).attr("y"));
+        var height = parseFloat(d3.select(this).attr("height"));
+        var width = parseFloat(d3.select(this).attr("width"));
+        var text = d3.select(this).attr("hovertext");
+
+        svg.append("g")
+        .attr("class", "bar-label")
+        .append("text")
+        .attr("x", x + 0.5*width)
+        .attr("y", y + 0.5*height)
+        .attr("dy", "0.5em")
+        .text(text);
+      };
+
+      var barMouseOut = function() {
+        svg.selectAll(".bar-label").remove();
+      };
+
       // add bars for every status
       var drawnStatuses = [];
       for(var i=0; i<statuses.length; i++) {
@@ -189,8 +209,11 @@ export default Ember.Component.extend({
         .attr("width", x.rangeBand())
         .attr("y", yAttr)
         .attr("height", heightAttr)
-        .on("mouseover", function() { console.log("mouseover triggered"); })
-        .on("mouseout", function() { console.log("mouseout triggered"); });
+        .attr("hovertext", statuses[i]);
+
+        svg.selectAll("." + statuses[i])
+        .on("mouseover", barMouseOver)
+        .on("mouseout", barMouseOut);
 
         drawnStatuses.push(statuses[i]);
       }
