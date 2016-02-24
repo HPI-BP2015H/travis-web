@@ -38,8 +38,6 @@ export default Ember.Component.extend({
     .then(function(response) {
       self.set("json", self.cleanData(response));
       self.set("isLoading", false);
-      //return drawChart(cleanData(response));
-      //drawChart(cleanData(json));
     });
     return "";
   }.property("repo"),
@@ -115,8 +113,6 @@ export default Ember.Component.extend({
       .orient("left")
       .ticks(yTicks(data));
 
-      //var meta_svg = d3.select(document.createElement("div"));
-      //var svg = meta_svg
       d3.selectAll("#build_history_chart").remove();
 
       var svg = d3.select(".build-history")
@@ -259,7 +255,7 @@ export default Ember.Component.extend({
         drawnStatuses.push(self.get("statuses")[i]);
       }
 
-      return "";//meta_svg.node().innerHTML;
+      return "";
     }
     return drawChart(self.get("json"));
   }.property("repo", "isLoading")
