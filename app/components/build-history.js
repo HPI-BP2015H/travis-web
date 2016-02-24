@@ -96,6 +96,11 @@ export default Ember.Component.extend({
           'passed': 10,
           'failed': 20,
           'errored': 30
+        },
+        '2016-02-15': {
+          'passed': 10,
+          'failed': 20,
+          'errored': 30
         }
       }
     };
@@ -160,6 +165,12 @@ export default Ember.Component.extend({
       .text("builds");
 
       // helper functions to avoid defintion in loop
+      d3.selection.prototype.moveToFront = function() {
+        return this.each(function(){
+          this.parentNode.appendChild(this);
+        });
+      };
+
       var xAttr = function(d) {
         return x(d.date);
       };
@@ -178,24 +189,58 @@ export default Ember.Component.extend({
         return result;
       };
 
-      var barMouseOver = function() {
+      var hovertext = function(d) {
+        return d[statuses[i]] + " " + statuses[i];
+      };
+
+      var barMouseEnter = function() {
+        var labelOffset = 5;
         var x = parseFloat(d3.select(this).attr("x"));
         var y = parseFloat(d3.select(this).attr("y"));
         var height = parseFloat(d3.select(this).attr("height"));
         var width = parseFloat(d3.select(this).attr("width"));
         var text = d3.select(this).attr("hovertext");
 
-        svg.append("g")
-        .attr("class", "bar-label")
-        .append("text")
-        .attr("x", x + 0.5*width)
-        .attr("y", y + 0.5*height)
-        .attr("dy", "0.5em")
+        var shadowGroup = svg.append("g")
+        .attr("class", "bar-shadow");
+
+        var shadowRect = shadowGroup.append("rect")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("x", x)
+        .attr("y", y);
+
+        var labelGroup = svg.append("g")
+        .attr("class", "bar-label");
+
+        var labelRect = labelGroup.append("rect")
+        .attr("x", 0)
+        .attr("y", 0);
+
+        var labelText = labelGroup.append("text")
+        .attr("x", 10)
+        .attr("y", 5)
+        .attr("dy", "1em")
         .text(text);
+
+        labelRect
+        .attr("height", labelText.node().getBBox().height + 10)
+        .attr("width", labelText.node().getBBox().width + 20);
+
+        var labelTranslationX = x + width + labelOffset;
+        var labelTranslationY = y + 0.5*height - 0.5*labelRect.attr("height")
+        if(labelTranslationX + parseFloat(labelRect.attr("width")) > marginWidth) {
+          labelTranslationX = x - labelRect.attr("width") - labelOffset;
+        }
+        labelGroup
+        .attr("transform", "translate(" + labelTranslationX + ", " + labelTranslationY + ")");
+
+        d3.select(this).moveToFront();
       };
 
-      var barMouseOut = function() {
+      var barMouseLeave = function() {
         svg.selectAll(".bar-label").remove();
+        svg.selectAll(".bar-shadow").remove();
       };
 
       // add bars for every status
@@ -209,11 +254,12 @@ export default Ember.Component.extend({
         .attr("width", x.rangeBand())
         .attr("y", yAttr)
         .attr("height", heightAttr)
-        .attr("hovertext", statuses[i]);
+        .attr("hovertext", hovertext);
+        //.attr("hovertext", statuses[i]);
 
         svg.selectAll("." + statuses[i])
-        .on("mouseover", barMouseOver)
-        .on("mouseout", barMouseOut);
+        .on("mouseenter", barMouseEnter)
+        .on("mouseleave", barMouseLeave);
 
         drawnStatuses.push(statuses[i]);
       }
