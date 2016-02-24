@@ -3,74 +3,86 @@ import d3 from 'd3';
 import config from 'travis/config/environment';
 
 export default Ember.Component.extend({
-  didInsertElement: function() {
-    apiQuery(this);
+  isLoading: true,
+  json: {},
+  statuses: [
+    'passed',
+    'started',
+    'queued',
+    'booting',
+    'received',
+    'created',
+    'failed',
+    'errored',
+    'canceled'
+  ],
 
-    var maxYTicks = 5;
-    var daysToDisplay = 10;
-    var statuses = [
-      'passed',
-      'started',
-      'queued',
-      'booting',
-      'received',
-      'created',
-      'failed',
-      'errored',
-      'canceled'
-    ];
+  cleanUp: function() {
+    d3.select("#build_history_chart").remove();
+  }.property("repo", "isLoading"),
 
-    function apiQuery(caller) {
-      var apiEndpoint = config.apiEndpoint,
-      repoId = caller.get('repo.id'),
-      options = {};
+  load: function() {
+    this.set("isLoading", true);
+    var self = this;
+    var apiEndpoint = config.apiEndpoint,
+    repoId = this.get('repo.id'),
+    options = {};
 
-      if (caller.get('auth.signedIn')) {
-        options.headers = {
-          Authorization: "token " + (caller.auth.token())
-        };
-      }
-
-      $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/build_history", options)
-      .then(function(response) {
-        //drawChart(cleanData(response));
-        drawChart(cleanData(json));
-      });
+    if (this.get('auth.signedIn')) {
+      options.headers = {
+        Authorization: "token " + (this.auth.token())
+      };
     }
 
-    function cleanData(json) {
-      var result = [];
-      // for each day starting today and going in the past
-      for(var i=0; i<daysToDisplay; i++) {
-        // create object with status variables set to zero
-        var current = {};
-        for(var j=0; j<statuses.length; j++) {
-          current[statuses[j]] = 0;
-        }
+    $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/build_history", options)
+    .then(function(response) {
+      self.set("json", self.cleanData(response));
+      self.set("isLoading", false);
+      //return drawChart(cleanData(response));
+      //drawChart(cleanData(json));
+    });
+    return "";
+  }.property("repo"),
 
-        // create current dayStrings
-        var day = new Date();
-        day.setDate(day.getDate()-i);
-        var dayStringISO = day.toISOString().substring(0,10);
-        var dayStringLocale = day.toLocaleDateString();
-        current['date'] = dayStringLocale;
+  cleanData(json) {
+    var daysToDisplay = 10;
+    var result = [];
+    // for each day starting today and going in the past
+    for(var i=0; i<daysToDisplay; i++) {
+      // create object with status variables set to zero
+      var current = {};
+      for(var j=0; j<this.get("statuses").length; j++) {
+        current[this.get("statuses")[j]] = 0;
+      }
 
-        // if dayStringISO in json: update status variables
-        if(dayStringISO in json.recent_build_history) {
-          for(j=0; j<statuses.length; j++) {
-            if(statuses[j] in json.recent_build_history[dayStringISO]) {
-              current[statuses[j]] = json.recent_build_history[dayStringISO][statuses[j]];
-            }
+      // create current dayStrings
+      var day = new Date();
+      day.setDate(day.getDate()-i);
+      var dayStringISO = day.toISOString().substring(0,10);
+      var dayStringLocale = day.toLocaleDateString();
+      current['date'] = dayStringLocale;
+
+      // if dayStringISO in json: update status variables
+      if(dayStringISO in json.recent_build_history) {
+        for(j=0; j<this.get("statuses").length; j++) {
+          if(this.get("statuses")[j] in json.recent_build_history[dayStringISO]) {
+            current[this.get("statuses")[j]] = json.recent_build_history[dayStringISO][this.get("statuses")[j]];
           }
         }
-        // append to result
-        result.push(current);
       }
-      return result;
+      // append to result
+      result.push(current);
     }
+    return result;
+  },
+
+  draw: function() {
+
+    var self = this;
 
     function yTicks(data) {
       var maxBuilds = 0;
+      var maxYTicks = 10;
       for(var i = 0; i < data.length; i++) {
         var builds = data[i].passed + data[i].failed;
         if(builds > maxBuilds) {
@@ -80,30 +92,6 @@ export default Ember.Component.extend({
       var result = maxBuilds <= maxYTicks ? maxBuilds : maxYTicks;
       return result;
     }
-
-    var json = {
-      "@type": "overview",
-      "@href": "/v3/repo/#{repo.id}/overview/build_history",
-      "@representation": "standard",
-      "recent_build_history": {
-        '2016-02-22': {
-          'failed': 10,
-          'started': 10,
-          'queued': 10,
-          'canceled': 20
-        },
-        '2016-02-20': {
-          'passed': 10,
-          'failed': 20,
-          'errored': 30
-        },
-        '2016-02-15': {
-          'passed': 10,
-          'failed': 20,
-          'errored': 30
-        }
-      }
-    };
 
     function drawChart(data) {
       var margin = {top: 20, right: 20, bottom: 30, left: 60},
@@ -127,8 +115,13 @@ export default Ember.Component.extend({
       .orient("left")
       .ticks(yTicks(data));
 
+      //var meta_svg = d3.select(document.createElement("div"));
+      //var svg = meta_svg
+      d3.selectAll("#build_history_chart").remove();
+
       var svg = d3.select(".build-history")
       .append("div")
+      .attr("id", "build_history_chart")
       .classed("svg-container", true)
       .append("svg")
       .attr("preserveAspectRatio", "xMinYMin meet")
@@ -140,8 +133,8 @@ export default Ember.Component.extend({
       x.domain(data.map(function(d) { return d.date; }));
       y.domain([0, d3.max(data, function(d) {
         var result = 0;
-        for(var i=0; i<statuses.length; i++) {
-          result += d[statuses[i]];
+        for(var i=0; i<self.get("statuses").length; i++) {
+          result += d[self.get("statuses")[i]];
         }
         return result;
       })]);
@@ -176,7 +169,7 @@ export default Ember.Component.extend({
       };
 
       var yAttr = function(d) {
-        var result = y(d[statuses[i]]);
+        var result = y(d[self.get("statuses")[i]]);
         for(var j=0; j<drawnStatuses.length; j++) {
           result += y(d[drawnStatuses[j]]) - marginHeight;
         }
@@ -184,13 +177,13 @@ export default Ember.Component.extend({
       };
 
       var heightAttr = function(d) {
-        var result = marginHeight - y(d[statuses[i]]);
+        var result = marginHeight - y(d[self.get("statuses")[i]]);
         result = result > 0 ? result + 1 : 0; // to avoid white lines
         return result;
       };
 
       var hovertext = function(d) {
-        return d[statuses[i]] + " " + statuses[i];
+        return d[self.get("statuses")[i]] + " " + self.get("statuses")[i];
       };
 
       var barMouseEnter = function() {
@@ -201,6 +194,7 @@ export default Ember.Component.extend({
         var width = parseFloat(d3.select(this).attr("width"));
         var text = d3.select(this).attr("hovertext");
 
+        // create blueish shadow
         var shadowGroup = svg.append("g")
         .attr("class", "bar-shadow");
 
@@ -210,6 +204,7 @@ export default Ember.Component.extend({
         .attr("x", x)
         .attr("y", y);
 
+        // create label next to the bar
         var labelGroup = svg.append("g")
         .attr("class", "bar-label");
 
@@ -227,14 +222,17 @@ export default Ember.Component.extend({
         .attr("height", labelText.node().getBBox().height + 10)
         .attr("width", labelText.node().getBBox().width + 20);
 
+        // position label
+        // (usually on the right side but left if right is out of screen)
         var labelTranslationX = x + width + labelOffset;
-        var labelTranslationY = y + 0.5*height - 0.5*labelRect.attr("height")
+        var labelTranslationY = y + 0.5*height - 0.5*labelRect.attr("height");
         if(labelTranslationX + parseFloat(labelRect.attr("width")) > marginWidth) {
           labelTranslationX = x - labelRect.attr("width") - labelOffset;
         }
         labelGroup
         .attr("transform", "translate(" + labelTranslationX + ", " + labelTranslationY + ")");
 
+        // move current bar to front to avoid z fighting effects
         d3.select(this).moveToFront();
       };
 
@@ -245,24 +243,24 @@ export default Ember.Component.extend({
 
       // add bars for every status
       var drawnStatuses = [];
-      for(var i=0; i<statuses.length; i++) {
-        svg.selectAll("." + statuses[i])
+      for(var i=0; i<self.get("statuses").length; i++) {
+        svg.selectAll("." + self.get("statuses")[i])
         .data(data)
         .enter().append("rect")
-        .attr("class", statuses[i])
+        .attr("class", self.get("statuses")[i])
         .attr("x", xAttr)
         .attr("width", x.rangeBand())
         .attr("y", yAttr)
         .attr("height", heightAttr)
-        .attr("hovertext", hovertext);
-        //.attr("hovertext", statuses[i]);
-
-        svg.selectAll("." + statuses[i])
+        .attr("hovertext", hovertext)
         .on("mouseenter", barMouseEnter)
         .on("mouseleave", barMouseLeave);
 
-        drawnStatuses.push(statuses[i]);
+        drawnStatuses.push(self.get("statuses")[i]);
       }
+
+      return "";//meta_svg.node().innerHTML;
     }
-  }
+    return drawChart(self.get("json"));
+  }.property("repo", "isLoading")
 });
