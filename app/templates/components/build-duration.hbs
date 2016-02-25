@@ -1,0 +1,11 @@
+<div class="build-duration">
+  {{cleanUp}}
+  {{load}}
+  {{#if isLoading}}
+    {{loading-indicator inline=true}}
+  {{else}}
+    <div class="svg-container">
+      {{{draw}}}
+    </div>
+  {{/if}}
+</div>
