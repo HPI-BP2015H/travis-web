@@ -2,8 +2,12 @@
   width: 100%
   .passed
     fill: $turf-green
-  .failed
+  .started, .queued, .booting, .received, .created
+    fill: $canary-yellow
+  .failed, .errored
     fill: $brick-red
+  .canceled
+    fill: $cement-grey
   .axis
     font-size: $font-size-sm
     font-weight: $font-weight-normal

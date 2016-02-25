@@ -4,7 +4,11 @@ import config from 'travis/config/environment';
 
 export default Ember.Component.extend({
   isLoading: true,
-  data: {},
+  json: {},
+
+  cleanUp: function() {
+    d3.select("#build_duration_chart").remove();
+  }.property("repo", "isLoading"),
 
   load: function() {
     this.set("isLoading", true);
@@ -21,60 +25,18 @@ export default Ember.Component.extend({
 
     $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/build_duration", options)
     .then(function(response) {
-      self.set("data", response);
+      self.set("json", response);
       self.set("isLoading", false);
     });
     return "";
   }.property("repo"),
 
   draw: function() {
-    var json = {
-      "@type": "overview",
-      "@href": "/v3/repo/HPI-BP2015H%2Fsqueak-parable/overview/build_time",
-      "@representation": "standard",
-      "build_time": [
-        {
-          "id": 491637,
-          "number": "6000000",
-          "state": "passed",
-          "duration": 121
-        },
-        {
-          "id": 490787,
-          "number": "5000000",
-          "state": "failed",
-          "duration": 88
-        },
-        {
-          "id": 491637,
-          "number": "4000000",
-          "state": "passed",
-          "duration": 121
-        },
-        {
-          "id": 490787,
-          "number": "3000000",
-          "state": "failed",
-          "duration": 88
-        },
-        {
-          "id": 491637,
-          "number": "2000000",
-          "state": "passed",
-          "duration": 121
-        },
-        {
-          "id": 490787,
-          "number": "1000000",
-          "state": "failed",
-          "duration": 88
-        }
-      ]
-    };
+    var json = this.get("json");
 
     var margin = {top: 20, right: 20, bottom: 40, left: 80},
     width = 400,
-    height = 20 * json.build_time.length,
+    height = 20 * json.build_duration.length,
     fullWidth = width + margin.left + margin.right,
     fullHeight = height + margin.top + margin.bottom;
 
@@ -94,6 +56,8 @@ export default Ember.Component.extend({
     .scale(y)
     .orient("left");
 
+    d3.select("#build_duration_chart").remove();
+
     var svg = d3.select(".build-duration")
     .append("div")
     .attr("id", "build_duration_chart")
@@ -105,8 +69,8 @@ export default Ember.Component.extend({
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    x.domain([0, d3.max(json.build_time, function(d) { return d.duration; })]);
-    y.domain(json.build_time.map(function(d) { return d.number; }));
+    x.domain([0, d3.max(json.build_duration, function(d) { return d.duration; })]);
+    y.domain(json.build_duration.map(function(d) { return d.number; }));
 
     svg.append("g")
     .attr("class", "x axis")
@@ -131,7 +95,7 @@ export default Ember.Component.extend({
     .text("builds");
 
     svg.selectAll(".duration")
-    .data(json.build_time)
+    .data(json.build_duration)
     .enter()
     .append("rect")
     .attr("class", function(d) { return d.state; })
