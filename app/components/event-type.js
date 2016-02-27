@@ -54,9 +54,7 @@ export default Ember.Component.extend({
 
   draw: function() {
     var data = this.get("data");
-    console.log(data);
     var events = Object.keys(data);
-    console.log(events);
     for(var i=0; i<events.length; i++) {
       drawOnePie(events[i], data[events[i]]);
     }
