@@ -80,7 +80,8 @@ export default Ember.Component.extend({
 
       var svg = d3.select(".event-type")
       .append("div")
-      .attr("id", "build_history_chart")
+      .attr("id", "event_type_chart") // TODO: Is it okay to give one id to many divs?
+      .attr("class", "eventType")
       .classed("svg-container", true)
       .append("svg")
       .attr("preserveAspectRatio", "xMinYMin meet")
