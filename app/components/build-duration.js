@@ -1,8 +1,10 @@
 import Ember from 'ember';
 import d3 from 'd3';
+import TravisRoute from 'travis/routes/basic';
 import config from 'travis/config/environment';
 
 export default Ember.Component.extend({
+  routing: Ember.inject.service("-routing"),
   isLoading: true,
   json: {},
 
@@ -32,6 +34,7 @@ export default Ember.Component.extend({
   }.property("repo"),
 
   draw: function() {
+    var self = this;
     var json = this.get("json");
 
     var margin = {top: 20, right: 20, bottom: 40, left: 80},
@@ -103,6 +106,8 @@ export default Ember.Component.extend({
     .attr("width", function(d) { return x(d.duration); })
     .attr("y", function(d) { return y(d.number); })
     .attr("height", y.rangeBand())
-    .on("click", function(d) { console.log("Do Ember transition stuff. (with ID: " + d.id + ")"); } );
+    .on("click", function(d) {
+      self.get("routing").transitionTo("/" + self.get("repo.slug") + "/builds/" + d.id);
+    });
   }.property("repo", "isLoading")
 });
