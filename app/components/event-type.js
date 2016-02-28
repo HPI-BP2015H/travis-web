@@ -104,6 +104,7 @@ export default Ember.Component.extend({
       .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
 
       var header = svg.append("text")
+      .attr("class", "pie-header")
       .text(self.beautifyEventType(eventType));
 
       header
