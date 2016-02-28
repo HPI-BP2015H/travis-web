@@ -52,7 +52,22 @@ export default Ember.Component.extend({
     return "";
   }.property("repo"),
 
+  beautifyEventType(uglyName) {
+    // TODO: Refactor to more generic form algorithm?
+    switch(uglyName) {
+      case "push":
+        return "Push";
+      case "pull_request":
+        return "Pull Request";
+      case "cron":
+        return "Cron";
+      default:
+        return uglyName;
+    }
+  },
+
   draw: function() {
+    var self = this;
     var data = this.get("data");
     var events = Object.keys(data);
     for(var i=0; i<events.length; i++) {
@@ -87,6 +102,13 @@ export default Ember.Component.extend({
       .classed("svg-content-responsive", true)
       .append("g")
       .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
+
+      var header = svg.append("text")
+      .text(self.beautifyEventType(eventType));
+
+      header
+      .attr("x", -width/2 + 5)
+      .attr("y", -height/2 + header.node().getBBox().height + 5);
 
       var g = svg.selectAll(".arc")
       .data(pie(data))
