@@ -116,7 +116,7 @@ export default Ember.Component.extend({
       .enter().append("g")
       .attr("class", "arc");
 
-      var piePieceMouseEnter = function() {
+      var piePieceMouseOver = function() {
         var text = d3.select(this).attr("hovertext");
         var x = d3.mouse(this)[0];
         var y = d3.mouse(this)[1];
@@ -143,7 +143,7 @@ export default Ember.Component.extend({
         labelGroup.attr("transform", "translate(" + offsetX + "," + offsetY + ")");
       };
 
-      var piePieceMouseLeave = function() {
+      var piePieceMouseOut = function() {
         d3.selectAll(".bar-label").remove();
       };
 
@@ -163,9 +163,9 @@ export default Ember.Component.extend({
       .attr("hovertext", function(d) { return d.data.state; });
 
       piePieces
-      .on("mouseenter", piePieceMouseEnter)
-      .on("mouseleave", piePieceMouseLeave)
-      .on("mousemove" , piePieceMouseMove );
+      .on("mouseover", piePieceMouseOver)
+      .on("mouseout" , piePieceMouseOut)
+      .on("mousemove", piePieceMouseMove);
 
     }
   }.property("repo", "isLoading")

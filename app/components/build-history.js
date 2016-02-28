@@ -182,7 +182,7 @@ export default Ember.Component.extend({
         return d[self.get("statuses")[i]] + " " + self.get("statuses")[i];
       };
 
-      var barMouseEnter = function() {
+      var barMouseOver = function() {
         var labelOffset = 5;
         var x = parseFloat(d3.select(this).attr("x"));
         var y = parseFloat(d3.select(this).attr("y"));
@@ -232,7 +232,7 @@ export default Ember.Component.extend({
         d3.select(this).moveToFront();
       };
 
-      var barMouseLeave = function() {
+      var barMouseOut = function() {
         svg.selectAll(".bar-label").remove();
         svg.selectAll(".bar-shadow").remove();
       };
@@ -249,8 +249,8 @@ export default Ember.Component.extend({
         .attr("y", yAttr)
         .attr("height", heightAttr)
         .attr("hovertext", hovertext)
-        .on("mouseenter", barMouseEnter)
-        .on("mouseleave", barMouseLeave);
+        .on("mouseover", barMouseOver)
+        .on("mouseout", barMouseOut);
 
         drawnStatuses.push(self.get("statuses")[i]);
       }
