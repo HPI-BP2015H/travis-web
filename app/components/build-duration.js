@@ -107,7 +107,7 @@ export default Ember.Component.extend({
     .attr("y", function(d) { return y(d.number); })
     .attr("height", y.rangeBand())
     .on("click", function(d) {
-      self.get("routing").transitionTo("/" + self.get("repo.slug") + "/builds/" + d.id);
+      self.get("routing").transitionTo("build", [d.id]);
     });
   }.property("repo", "isLoading")
 });
