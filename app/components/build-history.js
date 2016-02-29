@@ -137,7 +137,7 @@ export default Ember.Component.extend({
 
       // add x axis
       svg.append("g")
-      .attr("class", "x axis")
+      .attr("class", "build-history x axis")
       .attr("transform", "translate(0," + marginHeight + ")")
       .call(xAxis);
 

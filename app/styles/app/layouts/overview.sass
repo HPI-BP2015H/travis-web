@@ -6,3 +6,108 @@
     border-bottom: none
   .small-title
     margin-top: 0
+
+// container
+
+.chart-row
+  width: 100%
+  text-align: center
+
+.chart-container
+  margin-left: 1%
+  margin-right: 1%
+  margin-top: 0px
+  margin-bottom: 0px
+  width: 30%
+  display: inline-block
+  vertical-align: top
+
+.svg-container
+  display: inline-block
+  position: relative
+  width: 100%
+  vertical-align: top
+  overflow: hidden
+
+.svg-content-responsive
+  display: inline-block
+
+// states
+
+.passed
+  fill: $turf-green
+.started, .queued, .booting, .received, .created
+  fill: $canary-yellow
+.failed, .errored
+  fill: $brick-red
+.canceled
+  fill: $cement-grey
+
+// axes
+
+.axis
+  font-size: $font-size-s
+  font-weight: $font-weight-normal
+  font-style: normal
+  text
+    fill: $asphalt-grey
+  path
+    fill: none
+    stroke: $asphalt-grey
+    shape-rendering: auto
+  line
+    fill: none
+    stroke: $asphalt-grey
+    shape-rendering: auto
+
+.build-history.x.axis path
+  display: none
+
+.build-duration.axis
+  font-size: $font-size-sm
+
+// labels and highlighting
+
+.bar-label
+  font-size: $font-size-s
+  font-weight: $font-weight-normal
+  font-style: normal
+  text
+    fill: $asphalt-grey
+    text-anchor: start
+  rect
+    fill: $pebble-grey
+    stroke-width: 1
+    stroke: $cement-grey
+
+.bar-shadow
+  rect
+    stroke-width: 3
+    stroke: $oxide-blue
+    fill: transparent
+
+.pie-header
+  text
+    fill: $asphalt-grey
+    font-size: $font-size-sm
+    font-weight: $font-weight-normal
+
+// misc chart parts
+
+.pie-piece
+  stroke: $pebble-grey
+  stroke-width: 2px
+
+// text styling
+
+.streak-item
+  margin-left: 0
+  margin-right: 0
+
+p.streak-sentence
+  font-size: $font-size-sm
+  font-weight: $font-weight-normal
+
+span.streak-highlighted
+  font-size: $font-size-ml
+  font-weight: $font-weight-normal

@@ -76,7 +76,7 @@ export default Ember.Component.extend({
     y.domain(json.build_duration.map(function(d) { return d.number; }));
 
     svg.append("g")
-    .attr("class", "x axis")
+    .attr("class", "build-duration axis")
     .attr("transform", "translate(0," + height + ")")
     .call(xAxis)
     .append("text")
@@ -87,7 +87,7 @@ export default Ember.Component.extend({
     .text("duration / s");
 
     var yAxisGroup = svg.append("g")
-    .attr("class", "y axis")
+    .attr("class", "build-duration axis")
     .call(yAxis);
 
     var yAxisLabel = yAxisGroup.append("text")
