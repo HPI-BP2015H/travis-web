@@ -64,8 +64,10 @@ export default Ember.Component.extend({
       .map(function(element, index, array) {
         return (
           element.substr(0,1).toUpperCase() +
-          element.substr(1,element.length-1));
-      }).join(" "));
+          element.substr(1,element.length-1)
+        );
+      }).join(" ")
+    );
   },
 
   draw: function() {
@@ -86,33 +88,58 @@ export default Ember.Component.extend({
     .attr("viewBox", "0 0 " + fullWidth + " " + fullHeight)
     .classed("svg-content-responsive", true);
 
-    drawOnePie(svg, events[0], data[events[0]], {
-      width: fullWidth / 2,
-      height: fullHeight / 2,
-      x: fullWidth / 4,
-      y: 0
-    });
+    if(events.length == 1) {
+      drawOnePie(svg, events[0], data[events[0]], {
+        width: fullWidth / 2,
+        height: fullHeight / 2,
+        x: fullWidth / 4,
+        y: 0
+      });
+    }
 
-    drawOnePie(svg, events[1], data[events[1]], {
-      width: fullWidth / 2,
-      height: fullHeight / 2,
-      x: 0,
-      y: fullHeight / 2
-    });
+    if(events.length == 2) {
+      drawOnePie(svg, events[0], data[events[0]], {
+        width: fullWidth / 2,
+        height: fullHeight / 2,
+        x: 0,
+        y: 0
+      });
+      drawOnePie(svg, events[1], data[events[1]], {
+        width: fullWidth / 2,
+        height: fullHeight / 2,
+        x: fullWidth / 2,
+        y: 0
+      });
+    }
 
-    drawOnePie(svg, events[2], data[events[2]], {
-      width: fullWidth / 2,
-      height: fullHeight / 2,
-      x: fullWidth / 2,
-      y: fullHeight / 2
-    });
+    if(events.length == 3) {
+      drawOnePie(svg, events[0], data[events[0]], {
+        width: fullWidth / 2,
+        height: fullHeight / 2,
+        x: fullWidth / 4,
+        y: 0
+      });
+      drawOnePie(svg, events[1], data[events[1]], {
+        width: fullWidth / 2,
+        height: fullHeight / 2,
+        x: 0,
+        y: fullHeight / 2
+      });
+      drawOnePie(svg, events[2], data[events[2]], {
+        width: fullWidth / 2,
+        height: fullHeight / 2,
+        x: fullWidth / 2,
+        y: fullHeight / 2
+      });
+    }
 
-    function drawOnePie(svg, eventType, data, bBox) {
+    function drawOnePie(svg, eventType, data, bBox, headerPos) {
       var width = bBox.width,
       height = bBox.height,
       x = bBox.x,
       y = bBox.y,
-      radius = Math.min(width, height) / 2;
+      padding = 15,
+      radius = Math.min(width-padding, height-padding) / 2;
 
       var arc = d3.svg.arc()
       .outerRadius(radius-10)
@@ -137,13 +164,14 @@ export default Ember.Component.extend({
       .text(self.beautifyEventType(eventType));
 
       header
-      .attr("x", -width/2 + 5)
+      .attr("x", -header.node().getBBox().width/2)
       .attr("y", -height/2 + header.node().getBBox().height);
 
       var g = svg.selectAll(".arc")
       .data(pie(data))
       .enter().append("g")
-      .attr("class", "arc");
+      .attr("class", "arc")
+      .attr("transform", "translate(" + 0 + "," + padding + ")");
 
       var piePieceMouseOver = function() {
         var text = d3.select(this).attr("hovertext");
