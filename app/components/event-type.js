@@ -75,7 +75,7 @@ export default Ember.Component.extend({
     var data = this.get("data");
     var events = Object.keys(data);
     var fullWidth = 600;
-    var fullHeight = 250;
+    var fullHeight = 450;
 
     var svg = d3.select(".event-type")
     .append("div")
@@ -86,15 +86,32 @@ export default Ember.Component.extend({
     .attr("viewBox", "0 0 " + fullWidth + " " + fullHeight)
     .classed("svg-content-responsive", true);
 
-    for(var i=0; i<events.length; i++) {
-      drawOnePie(svg, events[i], data[events[i]], i);
-    }
+    drawOnePie(svg, events[0], data[events[0]], {
+      width: fullWidth / 2,
+      height: fullHeight / 2,
+      x: fullWidth / 4,
+      y: 0
+    });
 
-    function drawOnePie(svg, eventType, data, position) {
-      var width = fullWidth/3,
-      height = fullHeight,
-      x = position * width,
-      y = 0,
+    drawOnePie(svg, events[1], data[events[1]], {
+      width: fullWidth / 2,
+      height: fullHeight / 2,
+      x: 0,
+      y: fullHeight / 2
+    });
+
+    drawOnePie(svg, events[2], data[events[2]], {
+      width: fullWidth / 2,
+      height: fullHeight / 2,
+      x: fullWidth / 2,
+      y: fullHeight / 2
+    });
+
+    function drawOnePie(svg, eventType, data, bBox) {
+      var width = bBox.width,
+      height = bBox.height,
+      x = bBox.x,
+      y = bBox.y,
       radius = Math.min(width, height) / 2;
 
       var arc = d3.svg.arc()
