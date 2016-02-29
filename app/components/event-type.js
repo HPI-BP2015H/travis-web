@@ -77,7 +77,7 @@ export default Ember.Component.extend({
     var data = this.get("data");
     var events = Object.keys(data);
     var fullWidth = 500;
-    var fullHeight = 400;
+    var fullHeight = events.length === 3 ? 400 : 200 ;
 
     var svg = d3.select(".event-type")
     .append("div")
@@ -91,7 +91,7 @@ export default Ember.Component.extend({
     if(events.length === 1) {
       drawOnePie(svg, events[0], data[events[0]], {
         width: fullWidth / 2,
-        height: fullHeight / 2,
+        height: fullHeight,
         x: fullWidth / 4,
         y: 0
       });
@@ -100,13 +100,13 @@ export default Ember.Component.extend({
     if(events.length === 2) {
       drawOnePie(svg, events[0], data[events[0]], {
         width: fullWidth / 2,
-        height: fullHeight / 2,
+        height: fullHeight,
         x: 0,
         y: 0
       });
       drawOnePie(svg, events[1], data[events[1]], {
         width: fullWidth / 2,
-        height: fullHeight / 2,
+        height: fullHeight,
         x: fullWidth / 2,
         y: 0
       });
