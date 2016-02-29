@@ -113,7 +113,7 @@ export default Ember.Component.extend({
 
       header
       .attr("x", -width/2 + 5)
-      .attr("y", -height/2 + header.node().getBBox().height + 5);
+      .attr("y", -height/2 + header.node().getBBox().height);
 
       var g = svg.selectAll(".arc")
       .data(pie(data))
