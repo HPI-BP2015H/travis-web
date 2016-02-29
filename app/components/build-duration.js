@@ -148,7 +148,7 @@ export default Ember.Component.extend({
     .attr("y", function(d) { return y(d.number); })
     .attr("height", y.rangeBand())
     .attr("hovertext", function(d) {
-      return "#" + d.number + " (" + d.state + "): " + d.duration + "s"; 
+      return "#" + d.number + " (" + d.state + "): " + d.duration + "s";
     })
     .on("click", function(d) {
       self.get("routing").transitionTo("build", [d.id]);
