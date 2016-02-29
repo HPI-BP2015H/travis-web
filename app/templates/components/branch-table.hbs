@@ -1,0 +1,13 @@
+<h2 class="small-title">Branches</h2>
+<table>
+  <tr>
+    <th>name</th>
+    <th>passing builds in last 30 days</th>
+  </tr>
+  {{#each getBranchData as |branch|}}
+    <tr>
+      <td>{{branch.branchname}}</td>
+      <td>{{branch.percentage}}%</td>
+    </tr>
+  {{/each}}
+</table>
