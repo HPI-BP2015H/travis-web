@@ -7,21 +7,21 @@ export default Ember.Component.extend({
   data: {},
 
   convertData(json) {
-    var events = Object.keys(json.event_type_data);
+    var events = Object.keys(json.event_type);
     var eventDict = {};
     for(var i=0; i<events.length; i++) {
-      var states = Object.keys(json.event_type_data[events[i]]);
+      var states = Object.keys(json.event_type[events[i]]);
       var stateArray = [];
       var sum = 0;
       for(var j=0; j<states.length; j++) {
-        sum += json.event_type_data[events[i]][states[j]];
+        sum += json.event_type[events[i]][states[j]];
       }
       for(var j=0; j<states.length; j++) {
-        if(json.event_type_data[events[i]][states[j]] > 0) {
+        if(json.event_type[events[i]][states[j]] > 0) {
           stateArray.push({
             state: states[j],
-            count: json.event_type_data[events[i]][states[j]],
-            percentage: (json.event_type_data[events[i]][states[j]] / sum) * 100
+            count: json.event_type[events[i]][states[j]],
+            percentage: (json.event_type[events[i]][states[j]] / sum) * 100
           });
         }
       }
@@ -49,7 +49,7 @@ export default Ember.Component.extend({
       };
     }
 
-    $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/event_type_data", options)
+    $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/event_type", options)
     .then(function(response) {
       self.set("data", self.convertData(response));
       self.set("isLoading", false);
@@ -74,13 +74,27 @@ export default Ember.Component.extend({
     var self = this;
     var data = this.get("data");
     var events = Object.keys(data);
+    var fullWidth = 600;
+    var fullHeight = 250;
+
+    var svg = d3.select(".event-type")
+    .append("div")
+    .attr("id", "event_type_chart")
+    .classed("svg-container", true)
+    .append("svg")
+    .attr("preserveAspectRatio", "xMinYMin meet")
+    .attr("viewBox", "0 0 " + fullWidth + " " + fullHeight)
+    .classed("svg-content-responsive", true);
+
     for(var i=0; i<events.length; i++) {
-      drawOnePie(events[i], data[events[i]]);
+      drawOnePie(svg, events[i], data[events[i]], i);
     }
 
-    function drawOnePie(eventType, data) {
-      var width = 400,
-      height = 200,
+    function drawOnePie(svg, eventType, data, position) {
+      var width = fullWidth/3,
+      height = fullHeight,
+      x = position * width,
+      y = 0,
       radius = Math.min(width, height) / 2;
 
       var arc = d3.svg.arc()
@@ -95,15 +109,9 @@ export default Ember.Component.extend({
       .sort(null)
       .value(function(d) { return d.count; });
 
-      var svg = d3.select(".event-type")
-      .append("div")
-      .attr("id", "event_type_chart") // TODO: Is it okay to give one id to many divs?
-      .attr("class", "eventType")
-      .classed("svg-container", true)
-      .append("svg")
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", "0 0 " + width + " " + height)
-      .classed("svg-content-responsive", true)
+      svg = svg
+      .append("g")
+      .attr("transform", "translate(" + x + "," + y + ")")
       .append("g")
       .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
 
