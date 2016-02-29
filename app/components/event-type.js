@@ -16,7 +16,7 @@ export default Ember.Component.extend({
       for(var j=0; j<states.length; j++) {
         sum += json.event_type[events[i]][states[j]];
       }
-      for(var j=0; j<states.length; j++) {
+      for(j=0; j<states.length; j++) {
         if(json.event_type[events[i]][states[j]] > 0) {
           stateArray.push({
             state: states[j],
@@ -150,7 +150,7 @@ export default Ember.Component.extend({
         .attr("height", labelText.node().getBBox().height + 10)
         .attr("width", labelText.node().getBBox().width + 20);
 
-        var offsetX = x - labelGroup.node().getBBox().width - 5;
+        var offsetX = x - labelGroup.node().getBBox().width/2;
         var offsetY = y - labelGroup.node().getBBox().height - 5;
         labelGroup.attr("transform", "translate(" + offsetX + "," + offsetY + ")");
       };
@@ -164,7 +164,7 @@ export default Ember.Component.extend({
         var x = d3.mouse(this)[0];
         var y = d3.mouse(this)[1];
 
-        var offsetX = x - labelGroup.node().getBBox().width - 5;
+        var offsetX = x - labelGroup.node().getBBox().width/2;
         var offsetY = y - labelGroup.node().getBBox().height - 5;
         labelGroup.attr("transform", "translate(" + offsetX + "," + offsetY + ")");
       };
@@ -173,9 +173,9 @@ export default Ember.Component.extend({
       .attr("d", arc)
       .attr("class", function(d) { return d.data.state + " pie-piece"; })
       .attr("hovertext", function(d) {
-        return   d.data.count
-        + " "  + d.data.state
-        + " (" + d.data.percentage.toFixed(2) + "%)";
+        return   d.data.count +
+        " "  + d.data.state +
+        " (" + d.data.percentage.toFixed(2) + "%)";
       });
 
       piePieces
