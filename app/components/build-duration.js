@@ -97,6 +97,47 @@ export default Ember.Component.extend({
     .style("text-anchor", "end")
     .text("builds");
 
+    var barMouseOver = function() {
+      var text = d3.select(this).attr("hovertext");
+      var x = d3.mouse(this)[0];
+      var y = d3.mouse(this)[1];
+
+      var labelGroup = svg.append("g")
+      .attr("class", "bar-label");
+
+      var labelRect = labelGroup.append("rect")
+      .attr("x", 0)
+      .attr("y", 0);
+
+      var labelText = labelGroup.append("text")
+      .attr("x", 10)
+      .attr("y", 5)
+      .attr("dy", "1em")
+      .text(text);
+
+      labelRect
+      .attr("height", labelText.node().getBBox().height + 10)
+      .attr("width", labelText.node().getBBox().width + 20);
+
+      var offsetX = x - labelGroup.node().getBBox().width/2;
+      var offsetY = y - labelGroup.node().getBBox().height - 5;
+      labelGroup.attr("transform", "translate(" + offsetX + "," + offsetY + ")");
+    };
+
+    var barMouseOut = function() {
+      d3.selectAll(".bar-label").remove();
+    };
+
+    var barMouseMove = function() {
+      var labelGroup = d3.select(".bar-label");
+      var x = d3.mouse(this)[0];
+      var y = d3.mouse(this)[1];
+
+      var offsetX = x - labelGroup.node().getBBox().width/2;
+      var offsetY = y - labelGroup.node().getBBox().height - 5;
+      labelGroup.attr("transform", "translate(" + offsetX + "," + offsetY + ")");
+    };
+
     svg.selectAll(".duration")
     .data(json.build_duration)
     .enter()
@@ -106,8 +147,14 @@ export default Ember.Component.extend({
     .attr("width", function(d) { return x(d.duration); })
     .attr("y", function(d) { return y(d.number); })
     .attr("height", y.rangeBand())
+    .attr("hovertext", function(d) {
+      return "#" + d.number + " (" + d.state + "): " + d.duration + "s"; 
+    })
     .on("click", function(d) {
       self.get("routing").transitionTo("build", [d.id]);
-    });
+    })
+    .on("mouseover", barMouseOver)
+    .on("mouseout" , barMouseOut )
+    .on("mousemove", barMouseMove);
   }.property("repo", "isLoading")
 });

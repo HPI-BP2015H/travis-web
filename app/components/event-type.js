@@ -76,8 +76,8 @@ export default Ember.Component.extend({
     var self = this;
     var data = this.get("data");
     var events = Object.keys(data);
-    var fullWidth = 600;
-    var fullHeight = 450;
+    var fullWidth = 440;
+    var fullHeight = 350;
 
     var svg = d3.select(".event-type")
     .append("div")
