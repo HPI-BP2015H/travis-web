@@ -33,7 +33,7 @@ export default Ember.Component.extend({
   },
 
   cleanUp: function() {
-    // TODO
+    d3.selectAll("#event_type_chart").remove();
   }.property("repo", "isLoading"),
 
   load: function() {
@@ -69,6 +69,8 @@ export default Ember.Component.extend({
   },
 
   draw: function() {
+    d3.selectAll("#event_type_chart").remove();
+
     var self = this;
     var data = this.get("data");
     var events = Object.keys(data);
