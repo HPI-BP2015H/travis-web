@@ -58,17 +58,14 @@ export default Ember.Component.extend({
   }.property("repo"),
 
   beautifyEventType(uglyName) {
-    // TODO: Refactor to more generic form algorithm?
-    switch(uglyName) {
-      case "push":
-        return "Push";
-      case "pull_request":
-        return "Pull Request";
-      case "cron":
-        return "Cron";
-      default:
-        return uglyName;
-    }
+    return (
+      uglyName
+      .split(/[_\W]/)
+      .map(function(element, index, array) {
+        return (
+          element.substr(0,1).toUpperCase() +
+          element.substr(1,element.length-1));
+      }).join(" "));
   },
 
   draw: function() {
