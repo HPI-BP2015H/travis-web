@@ -12,11 +12,16 @@ export default Ember.Component.extend({
     for(var i=0; i<events.length; i++) {
       var states = Object.keys(json.event_type_data[events[i]]);
       var stateArray = [];
+      var sum = 0;
+      for(var j=0; j<states.length; j++) {
+        sum += json.event_type_data[events[i]][states[j]];
+      }
       for(var j=0; j<states.length; j++) {
         if(json.event_type_data[events[i]][states[j]] > 0) {
           stateArray.push({
             state: states[j],
-            count: json.event_type_data[events[i]][states[j]]
+            count: json.event_type_data[events[i]][states[j]],
+            percentage: (json.event_type_data[events[i]][states[j]] / sum) * 100
           });
         }
       }
@@ -160,7 +165,11 @@ export default Ember.Component.extend({
       var piePieces = g.append("path")
       .attr("d", arc)
       .attr("class", function(d) { return d.data.state + " pie-piece"; })
-      .attr("hovertext", function(d) { return d.data.state; });
+      .attr("hovertext", function(d) {
+        return   d.data.count
+        + " "  + d.data.state
+        + " (" + d.data.percentage.toFixed(2) + "%)";
+      });
 
       piePieces
       .on("mouseover", piePieceMouseOver)
