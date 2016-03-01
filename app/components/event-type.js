@@ -5,6 +5,11 @@ import config from 'travis/config/environment';
 export default Ember.Component.extend({
   isLoading: true,
   data: {},
+  allEvents: [
+    'push',
+    'pull_request',
+    'cron'
+  ],
   allStates: [
     'passed',
     'started',
@@ -18,7 +23,9 @@ export default Ember.Component.extend({
   ],
 
   convertData(json) {
-    var events = Object.keys(json.event_type);
+    var events = this.get("allEvents").filter(function(e) {
+      return Object.keys(json.event_type).indexOf(e) > -1;
+    });
     var eventDict = {};
     for(var i=0; i<events.length; i++) {
       var states = this.get("allStates").filter(function(e) {
