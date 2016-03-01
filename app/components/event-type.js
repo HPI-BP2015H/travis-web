@@ -5,12 +5,25 @@ import config from 'travis/config/environment';
 export default Ember.Component.extend({
   isLoading: true,
   data: {},
+  allStates: [
+    'passed',
+    'started',
+    'queued',
+    'booting',
+    'received',
+    'created',
+    'failed',
+    'errored',
+    'canceled'
+  ],
 
   convertData(json) {
     var events = Object.keys(json.event_type);
     var eventDict = {};
     for(var i=0; i<events.length; i++) {
-      var states = Object.keys(json.event_type[events[i]]);
+      var states = this.get("allStates").filter(function(e) {
+        return Object.keys(json.event_type[events[i]]).indexOf(e) > -1;
+      });
       var stateArray = [];
       var sum = 0;
       for(var j=0; j<states.length; j++) {
