@@ -2,13 +2,9 @@ import Ember from 'ember';
 import config from 'travis/config/environment';
 
 export default Ember.Component.extend({
-  classNames: ['branch_table'],
+  classNames: ['branch_health'],
 
-  repo_branches: function() {
-    return ['master', 'pharo'];
-  }.property('repo'),
-
-  getBranchData: function() {
+  branchData: function() {
     var result, apiEndpoint, options, repoId;
     apiEndpoint = config.apiEndpoint;
     repoId = this.get('repo.id');
