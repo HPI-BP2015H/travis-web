@@ -8,12 +8,10 @@ export default Ember.Component.extend({
   isLoading: true,
   json: {},
 
-  cleanUp: function() {
-    d3.select("#build_duration_chart").remove();
-  }.property("repo", "isLoading"),
-
   load: function() {
     this.set("isLoading", true);
+    d3.select("#build_duration_chart").remove();
+
     var self = this;
     var apiEndpoint = config.apiEndpoint,
     repoId = this.get('repo.id'),

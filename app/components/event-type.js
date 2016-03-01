@@ -45,12 +45,10 @@ export default Ember.Component.extend({
     return eventDict;
   },
 
-  cleanUp: function() {
-    d3.selectAll("#event_type_chart").remove();
-  }.property("repo", "isLoading"),
-
   load: function() {
     this.set("isLoading", true);
+    d3.selectAll("#event_type_chart").remove();
+
     var self = this;
     var apiEndpoint = config.apiEndpoint,
     repoId = this.get('repo.id'),
