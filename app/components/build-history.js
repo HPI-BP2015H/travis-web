@@ -34,7 +34,12 @@ export default Ember.Component.extend({
 
     $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/build_history", options)
     .then(function(response) {
-      self.set("json", self.cleanData(response));
+      // set json to empty array if there are no data
+      if(Object.keys(response.recent_build_history).length === 0) {
+        this.set("json", []);
+      } else {
+        self.set("json", self.cleanData(response));
+      }
       self.set("isLoading", false);
     });
     return "";
@@ -73,6 +78,11 @@ export default Ember.Component.extend({
   },
 
   draw: function() {
+
+    // abort drawing if there are no data
+    if(this.get("json").length === 0) {
+      return "";
+    }
 
     var self = this;
 
