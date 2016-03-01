@@ -192,7 +192,8 @@ export default Ember.Component.extend({
         var y = d3.mouse(this)[1];
 
         var labelGroup = svg.append("g")
-        .attr("class", "bar-label");
+        .attr("class", "label")
+        .attr("id", "pie-label-id");
 
         var labelRect = labelGroup.append("rect")
         .attr("x", 0)
@@ -214,11 +215,11 @@ export default Ember.Component.extend({
       };
 
       var piePieceMouseOut = function() {
-        d3.selectAll(".bar-label").remove();
+        d3.selectAll("#pie-label-id").remove();
       };
 
       var piePieceMouseMove = function() {
-        var labelGroup = d3.select(".bar-label");
+        var labelGroup = d3.select("#pie-label-id");
         var x = d3.mouse(this)[0];
         var y = d3.mouse(this)[1];
 

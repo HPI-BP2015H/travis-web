@@ -79,6 +79,8 @@ export default Ember.Component.extend({
     .attr("class", "build-duration axis")
     .attr("transform", "translate(0," + height + ")")
     .call(xAxis)
+    .append("g")
+    .attr("class", "axis-label")
     .append("text")
     .attr("x", width)
     .attr("y", margin.bottom)
@@ -90,7 +92,9 @@ export default Ember.Component.extend({
     .attr("class", "build-duration axis")
     .call(yAxis);
 
-    var yAxisLabel = yAxisGroup.append("text")
+    var yAxisLabel = yAxisGroup.append("g")
+    .attr("class", "axis-label")
+    .append("text")
     .attr("x", -yAxis.tickSize()-yAxis.tickPadding())
     .attr("y", -margin.top)
     .attr("dy", "1em")
@@ -103,7 +107,8 @@ export default Ember.Component.extend({
       var y = d3.mouse(this)[1];
 
       var labelGroup = svg.append("g")
-      .attr("class", "bar-label");
+      .attr("class", "label")
+      .attr("id", "bar-label-id");
 
       var labelRect = labelGroup.append("rect")
       .attr("x", 0)
@@ -125,11 +130,11 @@ export default Ember.Component.extend({
     };
 
     var barMouseOut = function() {
-      d3.selectAll(".bar-label").remove();
+      d3.selectAll("#bar-label-id").remove();
     };
 
     var barMouseMove = function() {
-      var labelGroup = d3.select(".bar-label");
+      var labelGroup = d3.select("#bar-label-id");
       var x = d3.mouse(this)[0];
       var y = d3.mouse(this)[1];
 

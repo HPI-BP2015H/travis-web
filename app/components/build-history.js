@@ -192,7 +192,8 @@ export default Ember.Component.extend({
 
         // create blueish shadow
         var shadowGroup = svg.append("g")
-        .attr("class", "bar-shadow");
+        .attr("class", "bar-shadow")
+        .attr("id", "bar-shadow-id");
 
         var shadowRect = shadowGroup.append("rect")
         .attr("width", width)
@@ -202,7 +203,8 @@ export default Ember.Component.extend({
 
         // create label next to the bar
         var labelGroup = svg.append("g")
-        .attr("class", "bar-label");
+        .attr("class", "label")
+        .attr("id", "bar-label-id");
 
         var labelRect = labelGroup.append("rect")
         .attr("x", 0)
@@ -233,8 +235,8 @@ export default Ember.Component.extend({
       };
 
       var barMouseOut = function() {
-        svg.selectAll(".bar-label").remove();
-        svg.selectAll(".bar-shadow").remove();
+        svg.selectAll("#bar-label-id").remove();
+        svg.selectAll("#bar-shadow-id").remove();
       };
 
       // add bars for every status
