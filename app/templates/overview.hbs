@@ -1,5 +1,22 @@
-<section class="overview-section">{{build-history repo=repo}}</section>
-<section class="overview-section">{{branch-row build=defaultBranch}}</section>
-<section class="overview-section">{{streak-item repo=repo}}</section>
-<section class="overview-section">{{chart-row repo=repo}}</section>
-<section class="overview-section">{{branch-health repo=repo}}</section>
+<section class="overview-section">
+  {{build-history repo=repo}}
+</section>
+
+<section class="overview-section">
+  <h2 class="small-title">Default Branch</h2>
+  {{branch-row build=defaultBranch}}
+</section>
+
+<section class="overview-section">
+  <h2 class="small-title">Current Streak</h2>
+  {{streak-item repo=repo}}
+</section>
+
+<section class="overview-section">
+  {{chart-row repo=repo}}
+</section>
+
+<section class="overview-section">
+  <h2 class="small-title">Passing builds in last 30 days</h2>
+  {{branch-health repo=repo}}
+</section>
