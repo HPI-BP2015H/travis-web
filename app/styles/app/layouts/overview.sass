@@ -21,6 +21,16 @@
   width: 45%
   display: inline-block
   vertical-align: middle
+  @media (max-width: 800px)
+    display: block
+    width: 70%
+    margin-left: auto
+    margin-right: auto
+  @media (max-width: 640px)
+    display: block
+    width: 90%
+    margin-left: auto
+    margin-right: auto
 
 .svg-container
   display: inline-block
@@ -48,8 +58,12 @@
 .axis
   text
     fill: $asphalt-grey
-    font-size: $font-size-sm
-    @media (max-width: 886px)
+    font-size: $font-size-s
+    @media (max-width: 1400px)
+      font-size: $font-size-sm
+    @media (max-width: 800px)
+      font-size: $font-size-m
+    @media (max-width: 640px)
       font-size: $font-size-ml
     font-weight: $font-weight-normal
     font-style: normal
@@ -70,6 +84,12 @@
 .bar-label
   text
     font-size: $font-size-s
+    @media (max-width: 1400px)
+      font-size: $font-size-sm
+    @media (max-width: 800px)
+      font-size: $font-size-m
+    @media (max-width: 640px)
+      font-size: $font-size-ml
     font-weight: $font-weight-normal
     font-style: normal
     fill: $asphalt-grey
@@ -88,6 +108,10 @@
 .pie-header
   fill: $asphalt-grey
   font-size: $font-size-sm
+  @media (max-width: 800px)
+    font-size: $font-size-m
+  @media (max-width: 640px)
+    font-size: $font-size-ml
   font-weight: $font-weight-normal
 
 // misc chart parts

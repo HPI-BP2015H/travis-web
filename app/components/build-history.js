@@ -57,7 +57,7 @@ export default Ember.Component.extend({
       var day = new Date();
       day.setDate(day.getDate()-i);
       var dayStringISO = day.toISOString().substring(0,10);
-      var dayStringLocale = day.toLocaleDateString(undefined, {month: 'long', day: '2-digit'});
+      var dayStringLocale = day.toLocaleDateString(undefined, {month: 'short', day: '2-digit'});
       current['date'] = dayStringLocale;
 
       // if dayStringISO in json: update status variables
