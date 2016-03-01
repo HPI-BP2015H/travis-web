@@ -24,7 +24,8 @@ export default Ember.Component.extend({
       for(var branchname in response.branches){
         array.push(Ember.Object.create({
           branchname: branchname,
-          percentage: Math.round(100*response.branches[branchname])
+          percentage: Math.round(100*response.branches[branchname]),
+          class: Math.round(100*response.branches[branchname]) >= 50 ? "batch-green" : "batch-red"
         }));
       }
       array.sort(function(a, b){
