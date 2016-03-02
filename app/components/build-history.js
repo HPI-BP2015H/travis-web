@@ -5,17 +5,7 @@ import config from 'travis/config/environment';
 export default Ember.Component.extend({
   isLoading: true,
   json: {},
-  statuses: [
-    'passed',
-    'started',
-    'queued',
-    'booting',
-    'received',
-    'created',
-    'failed',
-    'errored',
-    'canceled'
-  ],
+  statuses: config.travisStatuses,
 
   load: function() {
     this.set("isLoading", true);

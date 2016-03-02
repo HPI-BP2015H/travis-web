@@ -33,7 +33,23 @@ module.exports = function(environment) {
     intervals: { updateTimes: 1000 },
     statusPageStatusUrl: 'https://pnpcptp8xh9k.statuspage.io/api/v2/status.json',
     githubOrgsOauthAccessSettingsUrl: 'https://github.com/settings/connections/applications/f244293c729d5066cf27',
-    ajaxPolling: false
+    ajaxPolling: false,
+    travisEvents: [
+      'push',
+      'pull_request',
+      'cron'
+    ],
+    travisStatuses: [
+      'passed',
+      'started',
+      'queued',
+      'booting',
+      'received',
+      'created',
+      'failed',
+      'errored',
+      'canceled'
+    ]
   };
 
   if (typeof process !== 'undefined') {

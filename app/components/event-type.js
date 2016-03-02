@@ -5,22 +5,8 @@ import config from 'travis/config/environment';
 export default Ember.Component.extend({
   isLoading: true,
   data: {},
-  allEvents: [
-    'push',
-    'pull_request',
-    'cron'
-  ],
-  allStates: [
-    'passed',
-    'started',
-    'queued',
-    'booting',
-    'received',
-    'created',
-    'failed',
-    'errored',
-    'canceled'
-  ],
+  allEvents: config.travisEvents,
+  allStates: config.travisStatuses,
 
   convertData(json) {
     var events = this.get("allEvents").filter(function(e) {
