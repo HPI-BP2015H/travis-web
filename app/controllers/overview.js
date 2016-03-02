@@ -10,7 +10,9 @@ export default Ember.Controller.extend({
     var result, apiEndpoint, options, repoId;
     apiEndpoint = config.apiEndpoint;
     repoId = this.get('repo.id');
-    result = Ember.ObjectProxy.create();
+    result = Ember.ObjectProxy.create({
+      isLoading: true
+    });
     options = {};
     if (this.get('auth.signedIn')) {
       options.headers = {
@@ -19,6 +21,7 @@ export default Ember.Controller.extend({
     }
     $.ajax(apiEndpoint + "/v3/repo/" + repoId + "?include=repository.default_branch,build.commit", options).then(function(response) {
       response.default_branch.repository.id = response.id;
+      result.set("isLoading", false);
       return result.set('content', Ember.Object.create(response.default_branch));
     });
     return result;
