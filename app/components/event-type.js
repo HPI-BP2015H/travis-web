@@ -12,11 +12,14 @@ export default Ember.Component.extend({
     var events = this.get("allEvents").filter(function(e) {
       return Object.keys(json.event_type).indexOf(e) > -1;
     });
+
+    var statesFilter = function(i, e) {
+      return Object.keys(json.event_type[events[i]]).indexOf(e) > -1;
+    };
+
     var eventDict = {};
     for(var i=0; i<events.length; i++) {
-      var states = this.get("allStates").filter(function(e) {
-        return Object.keys(json.event_type[events[i]]).indexOf(e) > -1;
-      });
+      var states = this.get("allStates").filter(statesFilter.bind(undefined, i));
       var stateArray = [];
       var sum = 0;
       for(var j=0; j<states.length; j++) {
