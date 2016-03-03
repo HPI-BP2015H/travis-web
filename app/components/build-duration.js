@@ -121,7 +121,7 @@ export default Ember.Component.extend({
       .attr("width", labelText.node().getBBox().width + 20);
 
       var offsetX = x - labelGroup.node().getBBox().width/2;
-      var offsetY = y - labelGroup.node().getBBox().height - 5;
+      var offsetY = y - labelGroup.node().getBBox().height/2 - 5;
       labelGroup.attr("transform", "translate(" + offsetX + "," + offsetY + ")");
     };
 

@@ -17,15 +17,15 @@ export default Ember.Component.extend({
     }
     $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/branches", options).then(function(response) {
       var array = [];
-      for(var branchname in response.branches){
+      Object.keys(response.branches).forEach(function(branchname) {
         array.push(Ember.Object.create({
           branchname: branchname,
-          percentage: Math.round(100*response.branches[branchname]),
-          class: Math.round(100*response.branches[branchname]) >= 50 ? "batch-green" : "batch-red"
+          percentage: Math.round(100 * response.branches[branchname]),
+          class: Math.round(100 * response.branches[branchname]) >= 50 ? "batch-green" : "batch-red"
         }));
-      }
-      array.sort(function(a, b){
-        return a.branchname>b.branchname;
+      });
+      array.sort(function(a, b) {
+        return a.branchname > b.branchname;
       });
       result.set('count', array.length);
       result.set('content', array);

@@ -18,15 +18,15 @@ export default Ember.Component.extend({
     };
 
     var eventDict = {};
-    for(var i=0; i<events.length; i++) {
+    for (var i = 0; i < events.length; i++) {
       var states = this.get("allStates").filter(statesFilter.bind(undefined, i));
       var stateArray = [];
       var sum = 0;
-      for(var j=0; j<states.length; j++) {
+      for (var j = 0; j < states.length; j++) {
         sum += json.event_type[events[i]][states[j]];
       }
-      for(j=0; j<states.length; j++) {
-        if(json.event_type[events[i]][states[j]] > 0) {
+      for (j = 0; j < states.length; j++) {
+        if (json.event_type[events[i]][states[j]] > 0) {
           stateArray.push({
             state: states[j],
             count: json.event_type[events[i]][states[j]],
@@ -34,7 +34,7 @@ export default Ember.Component.extend({
           });
         }
       }
-      if(stateArray.length > 0) {
+      if (stateArray.length > 0) {
         eventDict[events[i]] = stateArray;
       }
     }
@@ -80,11 +80,11 @@ export default Ember.Component.extend({
   draw: function() {
     d3.selectAll("#event_type_chart").remove();
 
-    var self = this;
-    var data = this.get("data");
-    var events = Object.keys(data);
-    var fullWidth = 500;
-    var fullHeight = events.length === 3 ? 400 : 200 ;
+    var self = this,
+    data = this.get("data"),
+    events = Object.keys(data),
+    fullWidth = 500,
+    fullHeight = events.length === 3 ? 400 : 200;
 
     var svg = d3.select(".event-type")
     .append("div")
@@ -95,7 +95,7 @@ export default Ember.Component.extend({
     .attr("viewBox", "0 0 " + fullWidth + " " + fullHeight)
     .classed("svg-content-responsive", true);
 
-    if(events.length === 1) {
+    if (events.length === 1) {
       drawOnePie(svg, events[0], data[events[0]], {
         width: fullWidth / 2,
         height: fullHeight,
@@ -104,7 +104,7 @@ export default Ember.Component.extend({
       });
     }
 
-    if(events.length === 2) {
+    if (events.length === 2) {
       drawOnePie(svg, events[0], data[events[0]], {
         width: fullWidth / 2,
         height: fullHeight,
@@ -119,7 +119,7 @@ export default Ember.Component.extend({
       });
     }
 
-    if(events.length === 3) {
+    if (events.length === 3) {
       drawOnePie(svg, events[0], data[events[0]], {
         width: fullWidth / 2,
         height: fullHeight / 2,
@@ -140,7 +140,7 @@ export default Ember.Component.extend({
       });
     }
 
-    function drawOnePie(svg, eventType, data, bBox, headerPos) {
+    function drawOnePie(svg, eventType, data, bBox) {
       var width = bBox.width,
       height = bBox.height,
       x = bBox.x,
@@ -160,8 +160,7 @@ export default Ember.Component.extend({
       .sort(null)
       .value(function(d) { return d.count; });
 
-      svg = svg
-      .append("g")
+      svg = svg.append("g")
       .attr("transform", "translate(" + x + "," + y + ")")
       .append("g")
       .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
@@ -204,7 +203,7 @@ export default Ember.Component.extend({
         .attr("width", labelText.node().getBBox().width + 20);
 
         var offsetX = x - labelGroup.node().getBBox().width/2;
-        var offsetY = y - labelGroup.node().getBBox().height - 5;
+        var offsetY = y - labelGroup.node().getBBox().height/2 - 5;
         labelGroup.attr("transform", "translate(" + offsetX + "," + offsetY + ")");
       };
 
@@ -218,7 +217,7 @@ export default Ember.Component.extend({
         var y = d3.mouse(this)[1];
 
         var offsetX = x - labelGroup.node().getBBox().width/2;
-        var offsetY = y - labelGroup.node().getBBox().height - 5;
+        var offsetY = y - labelGroup.node().getBBox().height/2 - 5;
         labelGroup.attr("transform", "translate(" + offsetX + "," + offsetY + ")");
       };
 

@@ -25,7 +25,7 @@ export default Ember.Component.extend({
     $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/build_history", options)
     .then(function(response) {
       // set json to empty array if there are no data
-      if(Object.keys(response.recent_build_history).length === 0) {
+      if (Object.keys(response.recent_build_history).length === 0) {
         this.set("json", []);
       } else {
         self.set("json", self.cleanData(response));
@@ -42,7 +42,7 @@ export default Ember.Component.extend({
     for(var i=0; i<daysToDisplay; i++) {
       // create object with status variables set to zero
       var current = {};
-      for(var j=0; j<this.get("statuses").length; j++) {
+      for (var j = 0; j < this.get("statuses").length; j++) {
         current[this.get("statuses")[j]] = 0;
       }
 
@@ -50,12 +50,15 @@ export default Ember.Component.extend({
       var day = new Date();
       day.setDate(day.getDate()-i);
       var dayStringISO = day.toISOString().substring(0,10);
-      var dayStringLocale = day.toLocaleDateString(undefined, {month: 'short', day: '2-digit'});
+      var dayStringLocale = day.toLocaleDateString("en-US", {
+        month: 'short',
+        day: '2-digit'
+      });
       current['date'] = dayStringLocale;
 
       // if dayStringISO in json: update status variables
-      if(dayStringISO in json.recent_build_history) {
-        for(j=0; j<this.get("statuses").length; j++) {
+      if (dayStringISO in json.recent_build_history) {
+        for (j = 0; j < this.get("statuses").length; j++) {
           if(this.get("statuses")[j] in json.recent_build_history[dayStringISO]) {
             current[this.get("statuses")[j]] = json.recent_build_history[dayStringISO][this.get("statuses")[j]];
           }
@@ -70,7 +73,7 @@ export default Ember.Component.extend({
   draw: function() {
 
     // abort drawing if there are no data
-    if(this.get("json").length === 0) {
+    if (this.get("json").length === 0) {
       return "<span class=\"no-builds-caption\">No builds in last 10 days.</h2>";
     }
 
@@ -79,14 +82,13 @@ export default Ember.Component.extend({
     function yTicks(data) {
       var maxBuilds = 0;
       var maxYTicks = 10;
-      for(var i = 0; i < data.length; i++) {
+      for (var i = 0; i < data.length; i++) {
         var builds = data[i].passed + data[i].failed;
-        if(builds > maxBuilds) {
+        if (builds > maxBuilds) {
           maxBuilds = builds;
         }
       }
-      var result = maxBuilds <= maxYTicks ? maxBuilds : maxYTicks;
-      return result;
+      return maxBuilds <= maxYTicks ? maxBuilds : maxYTicks;
     }
 
     function drawChart(data) {
@@ -127,7 +129,7 @@ export default Ember.Component.extend({
       x.domain(data.map(function(d) { return d.date; }));
       y.domain([0, d3.max(data, function(d) {
         var result = 0;
-        for(var i=0; i<self.get("statuses").length; i++) {
+        for (var i = 0; i < self.get("statuses").length; i++) {
           result += d[self.get("statuses")[i]];
         }
         return result;
@@ -153,7 +155,7 @@ export default Ember.Component.extend({
 
       // helper functions to avoid defintion in loop
       d3.selection.prototype.moveToFront = function() {
-        return this.each(function(){
+        return this.each(function() {
           this.parentNode.appendChild(this);
         });
       };
@@ -164,7 +166,7 @@ export default Ember.Component.extend({
 
       var yAttr = function(d) {
         var result = y(d[self.get("statuses")[i]]);
-        for(var j=0; j<drawnStatuses.length; j++) {
+        for (var j = 0; j < drawnStatuses.length; j++) {
           result += y(d[drawnStatuses[j]]) - marginHeight;
         }
         return result;
@@ -188,7 +190,7 @@ export default Ember.Component.extend({
         var width = parseFloat(d3.select(this).attr("width"));
         var text = d3.select(this).attr("hovertext");
 
-        // create blueish shadow
+        // create shadow around bars
         var shadowGroup = svg.append("g")
         .attr("class", "bar-shadow")
         .attr("id", "bar-shadow-id");
@@ -222,9 +224,10 @@ export default Ember.Component.extend({
         // (usually on the right side but left if right is out of screen)
         var labelTranslationX = x + width + labelOffset;
         var labelTranslationY = y + 0.5*height - 0.5*labelRect.attr("height");
-        if(labelTranslationX + parseFloat(labelRect.attr("width")) > marginWidth) {
+        if (labelTranslationX + parseFloat(labelRect.attr("width")) > marginWidth) {
           labelTranslationX = x - labelRect.attr("width") - labelOffset;
         }
+
         labelGroup
         .attr("transform", "translate(" + labelTranslationX + ", " + labelTranslationY + ")");
 
@@ -239,7 +242,7 @@ export default Ember.Component.extend({
 
       // add bars for every status
       var drawnStatuses = [];
-      for(var i=0; i<self.get("statuses").length; i++) {
+      for (var i = 0; i < self.get("statuses").length; i++) {
         svg.selectAll("." + self.get("statuses")[i])
         .data(data)
         .enter().append("rect")
