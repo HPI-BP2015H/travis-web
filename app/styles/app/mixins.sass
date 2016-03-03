@@ -28,6 +28,12 @@
   padding: 0
   list-style: none
 
+@mixin chartFontEnlargement
+  @media (max-width: 800px)
+    font-size: $font-size-m
+  @media (max-width: 640px)
+    font-size: $font-size-ml
+
 %absolute-center
   position: absolute
   top: 0
