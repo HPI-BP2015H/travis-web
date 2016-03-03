@@ -1,25 +1,41 @@
 <a href="#" class="close" {{action "close"}}></a>
 <h3 class="small-title popup-title">Status Image</h3>
 <div class="form-pair">
-  <label class="form-label">Branch</label>
-  {{#if branches.isLoaded}}
-    {{#x-select value=branch}}
-      {{#each branches as |branch|}}
-        {{#x-option value=branch}}{{branch}}{{/x-option}}
-      {{/each}}
-    {{/x-select}}
-  {{else}}
-    {{loading-indicator}}
-  {{/if}}
+  <label class="form-label">Type</label>
+  {{#x-select value=type}}
+    {{#each types as |type|}}
+      {{#x-option value=type}}{{type}}{{/x-option}}
+    {{/each}}
+  {{/x-select}}
+  {{#unless isStreak}}
+    <label class="form-label">Branch</label>
+    {{#if branches.isLoaded}}
+      {{#x-select value=branch}}
+        {{#each branches as |branch|}}
+          {{#x-option value=branch}}{{branch}}{{/x-option}}
+        {{/each}}
+      {{/x-select}}
+    {{else}}
+      {{loading-indicator}}
+    {{/if}}
+  {{/unless}}
 </div>
 
 <div class="form-pair">
   <label class="form-label">
-  {{#x-select value=format}}
-    {{#each formats as |format|}}
-      {{#x-option value=format}}{{format}}{{/x-option}}
-    {{/each}}
-  {{/x-select}}
+  {{#if isStreak}}
+    {{#x-select value=streakFormat}}
+      {{#each streakFormats as |format|}}
+        {{#x-option value=format}}{{format}}{{/x-option}}
+      {{/each}}
+    {{/x-select}}
+  {{else}}
+    {{#x-select value=buildStateFormat}}
+      {{#each buildStatesFormats as |format|}}
+        {{#x-option value=format}}{{format}}{{/x-option}}
+      {{/each}}
+    {{/x-select}}
+  {{/if}}
 
   </label>
   {{status-image-input value=statusString class="url" rows=3}}

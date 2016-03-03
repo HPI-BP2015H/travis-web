@@ -1,6 +1,6 @@
 import config from 'travis/config/environment';
 var ccXml, email, githubAdmin, githubCommit, githubNetwork, githubPullRequest,
-    githubRepo, githubWatchers, gravatarImage, plainTextLog, statusImage;
+    githubRepo, githubWatchers, gravatarImage, plainTextLog, statusImage, streakImage;
 
 plainTextLog = function(id) {
   return config.apiEndpoint + "/jobs/" + id + "/log.txt?deansi=true";
@@ -40,6 +40,16 @@ statusImage = function(slug, branch) {
   }
 };
 
+streakImage = function(slug) {
+  var token;
+  if (config.pro) {
+    token = Travis.__container__.lookup('controller:currentUser').get('model.token');
+    return (location.protocol + "//" + location.host + "/" + slug + ".svg?streak&token=" + token);
+  } else {
+    return (location.protocol + "//" + location.host + "/" + slug + ".svg?streak");
+  }
+};
+
 ccXml = function(slug, branch) {
   var delimiter, token, url;
   url = "#" + config.apiEndpoint + "/repos/" + slug + "/cc.xml";
@@ -62,4 +72,4 @@ gravatarImage = function(email, size) {
     return "https://www.gravatar.com/avatar/" + (md5(email)) + "?s=" + size + "&d=blank";
 };
 
-export { plainTextLog, githubPullRequest, githubCommit, githubRepo, githubWatchers, githubNetwork, githubAdmin, statusImage, ccXml, email, gravatarImage };
+export { plainTextLog, githubPullRequest, githubCommit, githubRepo, githubWatchers, githubNetwork, githubAdmin, statusImage, streakImage, ccXml, email, gravatarImage };

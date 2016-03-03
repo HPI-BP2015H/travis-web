@@ -1,4 +1,4 @@
-import { ccXml as ccXmlUrl, statusImage as statusImageUrl } from 'travis/utils/urls';
+import { ccXml as ccXmlUrl, statusImage as statusImageUrl, streakImage as streakImageUrl } from 'travis/utils/urls';
 var asciidocStatusImage, ccxmlStatusUrl, format, markdownStatusImage,
     podStatusImage, rdocStatusImage, rstStatusImage, textileStatusImage, urlRepo;
 
@@ -6,52 +6,59 @@ urlRepo = (function(slug) {
   return "https://" + location.host + "/" + slug;
 });
 
-markdownStatusImage = (function(url, slug, branch) {
-  return "[![Build Status](" + (statusImageUrl(slug, branch)) + ")](" + url + ")";
+markdownStatusImage = (function(url, imageURL, text) {
+  return "[![" + text + "](" + imageURL + ")](" + url + ")";
 });
 
-textileStatusImage = (function(url, slug, branch) {
-  return "!" + (statusImageUrl(slug, branch)) + "!:" + url;
+textileStatusImage = (function(url, imageURL, text) {
+  return "!" + imageURL + "!:" + url;
 });
 
-rdocStatusImage = (function(url, slug, branch) {
-  return "{<img src=\"" + (statusImageUrl(slug, branch)) + "\" alt=\"Build Status\" />}[" + url + "]";
+rdocStatusImage = (function(url, imageURL, text) {
+  return "{<img src=\"" + imageURL + "\" alt=\"" + text + "\" />}[" + url + "]";
 });
 
-asciidocStatusImage = (function(url, slug, branch) {
-  return "image:" + (statusImageUrl(slug, branch)) + "[\"Build Status\", link=\"" + url + "\"]";
+asciidocStatusImage = (function(url, imageURL, text) {
+  return "image:" + imageURL + "[\"" + text + "\", link=\"" + url + "\"]";
 });
 
-rstStatusImage = (function(url, slug, branch) {
-  return ".. image:: " + (statusImageUrl(slug, branch)) + "\n    :target: " + url;
+rstStatusImage = (function(url, imageURL, text) {
+  return ".. image:: " + imageURL + "\n    :target: " + url;
 });
 
-podStatusImage = (function(url, slug, branch) {
-  return "=for HTML <a href=\"" + url + "\"><img src=\"" + (statusImageUrl(slug, branch)) + "\"></a>";
+podStatusImage = (function(url, imageURL, text) {
+  return "=for HTML <a href=\"" + url + "\"><img src=\"" + imageURL + "\"></a>";
 });
 
 ccxmlStatusUrl = (function(slug, branch) {
   return ccXmlUrl(slug, branch);
 });
 
-format = function(version, slug, branch) {
-  var url;
+format = function(version, slug, branch, type) {
+  var url, imageURL, text;
   url = urlRepo(slug);
+  if (type == 'Streak') {
+    imageURL = streakImageUrl(slug);
+    text = 'Streak';
+  } else {
+    imageURL = statusImageUrl(slug, branch);
+    text = 'Build Status';
+  }
   switch (version) {
     case 'Image URL':
-      return statusImageUrl(slug, branch);
+      return imageURL;
     case 'Markdown':
-      return markdownStatusImage(url, slug, branch);
+      return markdownStatusImage(url, imageURL, text);
     case 'Textile':
-      return textileStatusImage(url, slug, branch);
+      return textileStatusImage(url, imageURL, text);
     case 'Rdoc':
-      return rdocStatusImage(url, slug, branch);
+      return rdocStatusImage(url, imageURL, text);
     case 'AsciiDoc':
-      return asciidocStatusImage(url, slug, branch);
+      return asciidocStatusImage(url, imageURL, text);
     case 'RST':
-      return rstStatusImage(url, slug, branch);
+      return rstStatusImage(url, imageURL, text);
     case 'Pod':
-      return podStatusImage(url, slug, branch);
+      return podStatusImage(url, imageURL, text);
     case 'CCTray':
       return ccxmlStatusUrl(slug, branch);
   }
