@@ -70,8 +70,8 @@ export default Ember.Component.extend({
       .split(/[_\W]/)
       .map(function(element, index, array) {
         return (
-          element.substr(0,1).toUpperCase() +
-          element.substr(1,element.length-1)
+          element.charAt(0).toUpperCase() +
+          element.substr(1)
         );
       }).join(" ")
     );

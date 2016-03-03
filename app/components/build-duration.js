@@ -83,7 +83,6 @@ export default Ember.Component.extend({
     .attr("x", width)
     .attr("y", margin.bottom)
     .attr("dy", "-0.25em")
-    .style("text-anchor", "end")
     .text("duration / s");
 
     var yAxisGroup = svg.append("g")
@@ -96,7 +95,6 @@ export default Ember.Component.extend({
     .attr("x", -yAxis.tickSize()-yAxis.tickPadding())
     .attr("y", -margin.top)
     .attr("dy", "1em")
-    .style("text-anchor", "end")
     .text("builds");
 
     var barMouseOver = function() {
