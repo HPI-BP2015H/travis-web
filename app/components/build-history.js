@@ -8,7 +8,10 @@ export default Ember.Component.extend({
   statuses: config.travisStatuses,
 
   load: function() {
+    // set flag to show loading indicator instead of drawing the chart
     this.set("isLoading", true);
+
+    // remove old chart, in case of rerendering
     d3.select("#build_history_chart").remove();
 
     var self = this;
@@ -79,6 +82,7 @@ export default Ember.Component.extend({
 
     var self = this;
 
+    // to avoid too many ticks
     function yTicks(data) {
       var maxBuilds = 0;
       var maxYTicks = 10;
@@ -92,6 +96,10 @@ export default Ember.Component.extend({
     }
 
     function drawChart(data) {
+      // another cleanup, just in case
+      d3.selectAll("#build_history_chart").remove();
+
+      // margin for axes
       var margin = {top: 20, right: 20, bottom: 30, left: 60},
       fullWidth = 1000,
       fullHeight = 200,
@@ -113,8 +121,7 @@ export default Ember.Component.extend({
       .orient("left")
       .ticks(yTicks(data));
 
-      d3.selectAll("#build_history_chart").remove();
-
+      // set up pane
       var svg = d3.select(".build-history")
       .append("div")
       .attr("id", "build_history_chart")
@@ -126,6 +133,8 @@ export default Ember.Component.extend({
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+      // map x axis to last 10 days
+      // map y axis to 0 to maximum number of builds on a single day
       x.domain(data.map(function(d) { return d.date; }));
       y.domain([0, d3.max(data, function(d) {
         var result = 0;
@@ -153,13 +162,14 @@ export default Ember.Component.extend({
       .style("text-anchor", "middle")
       .text("builds");
 
-      // helper functions to avoid defintion in loop
+      // helper function to prevent loosing the focus
       d3.selection.prototype.moveToFront = function() {
         return this.each(function() {
           this.parentNode.appendChild(this);
         });
       };
 
+      // helper functions to avoid defintion in loop
       var xAttr = function(d) {
         return x(d.date);
       };
@@ -236,6 +246,7 @@ export default Ember.Component.extend({
       };
 
       var barMouseOut = function() {
+        // remove label and shadow
         svg.selectAll("#bar-label-id").remove();
         svg.selectAll("#bar-shadow-id").remove();
       };

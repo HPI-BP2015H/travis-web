@@ -9,7 +9,10 @@ export default Ember.Component.extend({
   json: {},
 
   load: function() {
+    // set flag to show loading indicator instead of drawing the chart
     this.set("isLoading", true);
+
+    // remove old chart, in case of rerendering
     d3.select("#build_duration_chart").remove();
 
     var self = this;
@@ -32,9 +35,13 @@ export default Ember.Component.extend({
   }.property("repo"),
 
   draw: function() {
+    // another cleanup, just in case
+    d3.select("#build_duration_chart").remove();
+
     var self = this;
     var json = this.get("json");
 
+    // margin for axes
     var margin = {top: 20, right: 20, bottom: 40, left: 80},
     width = 400,
     height = 20 * json.build_duration.length,
@@ -57,8 +64,7 @@ export default Ember.Component.extend({
     .scale(y)
     .orient("left");
 
-    d3.select("#build_duration_chart").remove();
-
+    // set up pane
     var svg = d3.select(".build-duration")
     .append("div")
     .attr("id", "build_duration_chart")
@@ -70,9 +76,12 @@ export default Ember.Component.extend({
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    // map x axis to 0 to maximum duration
+    // map y axis to build numbers (not ids)
     x.domain([0, d3.max(json.build_duration, function(d) { return d.duration; })]);
     y.domain(json.build_duration.map(function(d) { return d.number; }));
 
+    // add x axis
     svg.append("g")
     .attr("class", "build-duration axis")
     .attr("transform", "translate(0," + height + ")")
@@ -85,6 +94,7 @@ export default Ember.Component.extend({
     .attr("dy", "-0.25em")
     .text("duration / s");
 
+    // add y axis
     var yAxisGroup = svg.append("g")
     .attr("class", "build-duration axis")
     .call(yAxis);
@@ -98,6 +108,7 @@ export default Ember.Component.extend({
     .text("builds");
 
     var barMouseOver = function() {
+      // create tooltip
       var text = d3.select(this).attr("hovertext");
       var x = d3.mouse(this)[0];
       var y = d3.mouse(this)[1];
@@ -120,12 +131,14 @@ export default Ember.Component.extend({
       .attr("height", labelText.node().getBBox().height + 10)
       .attr("width", labelText.node().getBBox().width + 20);
 
+      // position centered above mouse
       var offsetX = x - labelGroup.node().getBBox().width/2;
       var offsetY = y - labelGroup.node().getBBox().height/2 - 5;
       labelGroup.attr("transform", "translate(" + offsetX + "," + offsetY + ")");
     };
 
     var barMouseOut = function() {
+      // remove tooltip
       d3.selectAll("#bar-label-id").remove();
     };
 
@@ -134,11 +147,13 @@ export default Ember.Component.extend({
       var x = d3.mouse(this)[0];
       var y = d3.mouse(this)[1];
 
+      // reposition centered above mouse
       var offsetX = x - labelGroup.node().getBBox().width/2;
       var offsetY = y - labelGroup.node().getBBox().height - 5;
       labelGroup.attr("transform", "translate(" + offsetX + "," + offsetY + ")");
     };
 
+    // for each build: draw bar
     svg.selectAll(".duration")
     .data(json.build_duration)
     .enter()
@@ -151,6 +166,7 @@ export default Ember.Component.extend({
     .attr("hovertext", function(d) {
       return "#" + d.number + " (" + d.state + "): " + d.duration + "s";
     })
+    // on click: transition to build page
     .on("click", function(d) {
       self.get("routing").transitionTo("build", [d.id]);
     })
