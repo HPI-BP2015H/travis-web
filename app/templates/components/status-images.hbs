@@ -23,19 +23,11 @@
 
 <div class="form-pair">
   <label class="form-label">
-  {{#if isStreak}}
-    {{#x-select value=streakFormat}}
-      {{#each streakFormats as |format|}}
-        {{#x-option value=format}}{{format}}{{/x-option}}
-      {{/each}}
-    {{/x-select}}
-  {{else}}
-    {{#x-select value=buildStateFormat}}
-      {{#each buildStatesFormats as |format|}}
-        {{#x-option value=format}}{{format}}{{/x-option}}
-      {{/each}}
-    {{/x-select}}
-  {{/if}}
+  {{#x-select value=format}}
+    {{#each formats as |format|}}
+      {{#x-option value=format}}{{format}}{{/x-option}}
+    {{/each}}
+  {{/x-select}}
 
   </label>
   {{status-image-input value=statusString class="url" rows=3}}

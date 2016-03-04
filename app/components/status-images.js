@@ -14,6 +14,15 @@ export default Ember.Component.extend({
   streakFormats: ['Image URL', 'Markdown', 'Textile', 'Rdoc', 'AsciiDoc', 'RST', 'Pod'],
   buildStatesFormats: ['Image URL', 'Markdown', 'Textile', 'Rdoc', 'AsciiDoc', 'RST', 'Pod', 'CCTray'],
 
+  formats: function() {
+    let type = this.get('type') || this.get('types.firstObject');
+    if (type == "Streak") {
+      return this.get('streakFormats');
+    } else {
+      return this.get('buildStatesFormats');
+    }
+  }.property('type'),
+
   branches: function() {
     let repoId = this.get('repo.id'),
         popupName = this.get('popupName');
@@ -60,14 +69,8 @@ export default Ember.Component.extend({
 
   statusString: function() {
     let type   = this.get('type') || this.get('types.firstObject'),
-        branch = this.get('branch') || 'master';
-    var format;
-    if (type == "Streak") {
-      format = this.get('streakFormat') || this.get('streakFormats.firstObject');
-    } else {
-      format = this.get('buildStateFormat') || this.get('buildStatesFormats.firstObject');
-    }
-
-    return formatStatusImage(format, this.get('repo.slug'), branch, this.get('type'));
-  }.property('streakFormat', 'buildStateFormats', 'repo.slug', 'branch', 'type')
+        branch = this.get('branch') || 'master',
+        format = this.get('format') || this.get('formats.firstObject');
+    return formatStatusImage(format, this.get('repo.slug'), branch, type);
+  }.property('format', 'repo.slug', 'branch', 'type')
 });
