@@ -54,7 +54,7 @@ export default Ember.Component.extend({
     }
   },
 
-  isStreak: function() {
+  isStreak:  function() {
     return this.get('type') == 'Streak';
   }.property('type', 'repo.slug'),
 
@@ -63,11 +63,11 @@ export default Ember.Component.extend({
         branch = this.get('branch') || 'master';
     var format;
     if (type == "Streak") {
-      format = this.get('streakFormat') || this.get('streakFormats.firstObject');
+      format = this.get('format') || this.get('streakFormats.firstObject');
     } else {
       format = this.get('buildStateFormat') || this.get('buildStatesFormats.firstObject');
     }
 
     return formatStatusImage(format, this.get('repo.slug'), branch, this.get('type'));
-  }.property('streakFormat', 'buildStateFormats', 'repo.slug', 'branch', 'type')
+  }.property('streakFormat', 'buildStateFormats', 'repo.slug', 'branch', 'type', 'format')
 });
