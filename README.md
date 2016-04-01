@@ -50,6 +50,12 @@ In case you want your own certificate, you can follow the instructions posted
 here: https://gist.github.com/trcarden/3295935 and then point the server to your
 certificate with `--ssl-key` and `--ssl-cert`.
 
+### Running with different endpoints
+
+You can use different API and AUTH endpoints with:
+
+    AUTH_ENDPOINT=https://auth.example.org API_ENDPOINT=https://api.example.org ember serve
+
 ### Running tests
 
 First you have to install PhantonJS:
