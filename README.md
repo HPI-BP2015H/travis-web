@@ -2,11 +2,12 @@
 [![Build Status](https://travis-ci.org/travis-ci/travis-web.png?branch=master)](https://travis-ci.org/travis-ci/travis-web)
 ### Running the app
 
-The app is developed using [Ember CLI](http://ember-cli.com). It requires nodejs
-with npm installed.
+The app is developed using [Ember CLI](http://ember-cli.com). It requires [Node.js](https://nodejs.org) with npm installed.
 
 In order to run the app you need to install dependencies with:
 
+    npm install -g ember-cli
+    npm install -g bower
     bower install
     npm install
 
@@ -50,6 +51,10 @@ here: https://gist.github.com/trcarden/3295935 and then point the server to your
 certificate with `--ssl-key` and `--ssl-cert`.
 
 ### Running tests
+
+First you have to install PhantonJS:
+
+    npm install -g phantomjs
 
 To run a test suite execute:
 
