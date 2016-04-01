@@ -60,7 +60,7 @@ You can use different API and AUTH endpoints with:
 
 First you have to install PhantonJS:
 
-    npm install -g phantomjs
+    npm install -g phantomjs-prebuilt
 
 To run a test suite execute:
 
