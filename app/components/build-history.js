@@ -29,7 +29,7 @@ export default Ember.Component.extend({
     .then(function(response) {
       // set json to empty array if there are no data
       if (Object.keys(response.recent_build_history).length === 0) {
-        this.set("json", []);
+        self.set("json", []);
       } else {
         self.set("json", self.cleanData(response));
       }
