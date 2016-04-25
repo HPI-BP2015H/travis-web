@@ -48,11 +48,11 @@ export default Ember.Component.extend({
     fullWidth = width + margin.left + margin.right,
     fullHeight = height + margin.top + margin.bottom;
 
-    var x = d3.scale.linear()
-    .range([0,width]);
+    var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], 0.6);
 
-    var y = d3.scale.ordinal()
-    .rangeRoundBands([0, height], 0.6);
+    var y = d3.scale.linear()
+    .range([0, height]);
 
     var xAxis = d3.svg.axis()
     .scale(x)
@@ -76,10 +76,10 @@ export default Ember.Component.extend({
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // map x axis to 0 to maximum duration
-    // map y axis to build numbers (not ids)
-    x.domain([0, d3.max(json.build_duration, function(d) { return d.duration; })]);
-    y.domain(json.build_duration.map(function(d) { return d.number; }));
+    // map x axis to build numbers (not ids)
+    // map y axis to 0 to maximum duration
+    x.domain(json.build_duration.map(function(d) { return d.number; }));
+    y.domain([0, d3.max(json.build_duration, function(d) { return d.duration; })]);
 
     // add x axis
     svg.append("g")
@@ -92,7 +92,7 @@ export default Ember.Component.extend({
     .attr("x", width)
     .attr("y", margin.bottom)
     .attr("dy", "-0.25em")
-    .text("duration / s");
+    .text("builds");
 
     // add y axis
     var yAxisGroup = svg.append("g")
@@ -105,7 +105,7 @@ export default Ember.Component.extend({
     .attr("x", -yAxis.tickSize()-yAxis.tickPadding())
     .attr("y", -margin.top)
     .attr("dy", "1em")
-    .text("builds");
+    .text("duration / s");
 
     var barMouseOver = function() {
       // create tooltip
@@ -159,10 +159,10 @@ export default Ember.Component.extend({
     .enter()
     .append("rect")
     .attr("class", function(d) { return d.state; })
-    .attr("x", 0)
-    .attr("width", function(d) { return x(d.duration); })
-    .attr("y", function(d) { return y(d.number); })
-    .attr("height", y.rangeBand())
+    .attr("x", function(d) { return x(d.number); })
+    .attr("width", x.rangeBand())
+    .attr("y", function(d) { return height-y(d.duration); })
+    .attr("height", function(d) { return y(d.duration); })
     .attr("hovertext", function(d) {
       return "#" + d.number + " (" + d.state + "): " + d.duration + "s";
     })
