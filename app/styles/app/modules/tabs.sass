@@ -10,6 +10,7 @@
     width: 100%
     @media #{$medium-up}
       margin-top: 0
+      margin-bottom: 4px
       display: block
   li
     flex: 0 0 8em
@@ -21,7 +22,6 @@
       margin: 0 1.5em 0 0
 
   a
-    @extend %inline-block
     width: 100%
     color: $asphalt-grey
     padding: 3px 0 5px
@@ -45,7 +45,6 @@
   position: relative
   .tabnav-sub
     @include resetul
-    @extend %inline-block
     overflow: visible
     a
       color: $asphalt-grey
@@ -76,13 +75,13 @@
     left: .5em
 
   .tab-arrow
+    @extend %icon-line-arrowtabs
     display: inline-block
     position: absolute
-    top: 5px
-    left: -19px
-    width: .7em
+    top: 1px
+    left: -22px
+    width: 1em
     height:  1.3em
     background:
       size: auto 100%
       repeat: no-repeat
-      image: inline-image('line-icons/icon-arrow-tabs.svg')

@@ -2,8 +2,10 @@ import Ember from 'ember';
 import config from 'travis/config/environment';
 import RESTAdapter from 'ember-data/adapters/rest';
 
+const { service } = Ember.inject;
+
 export default RESTAdapter.extend({
-  auth: Ember.inject.service(),
+  auth: service(),
   host: config.apiEndpoint,
 
   sortQueryParams: false,
@@ -54,5 +56,11 @@ export default RESTAdapter.extend({
   pathForType: function(modelName, id) {
     var underscored = Ember.String.underscore(modelName);
     return id ? underscored :  Ember.String.pluralize(underscored);
+  },
+
+  // this can be removed once this PR is merged and live:
+  // https://github.com/emberjs/data/pull/4204
+  findRecord(store, type, id, snapshot) {
+    return this.ajax(this.buildURL(type.modelName, id, snapshot, 'findRecord'), 'GET');
   }
 });

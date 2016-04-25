@@ -3,8 +3,10 @@ import Repo from 'travis/models/repo';
 import ScrollResetMixin from 'travis/mixins/scroll-reset';
 import Ember from 'ember';
 
+const { service } = Ember.inject;
+
 export default TravisRoute.extend(ScrollResetMixin, {
-  store: Ember.inject.service(),
+  store: service(),
 
   titleToken(model) {
     return model.get('slug');
@@ -17,7 +19,7 @@ export default TravisRoute.extend(ScrollResetMixin, {
   },
 
   setupController(controller, model) {
-    this.container.lookup('controller:repos').activate('owned');
+    this.controllerFor('repos').activate('owned');
     if (model && !model.get) {
       model = this.get('store').find('repo', model.id);
     }

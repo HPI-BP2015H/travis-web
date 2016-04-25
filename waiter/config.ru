@@ -59,6 +59,7 @@ run Travis::Web::App.build(
   pusher_key:      ENV['PUSHER_KEY'],
   pusher_host:     ENV['PUSHER_HOST'] || 'ws.pusherapp.com',
   pusher_path:     ENV['PUSHER_PATH'],
+  pusher_channel_prefix: ENV['PUSHER_CHANNEL_PREFIX'],
   ga_code:         ENV['GA_CODE'],
   root:            File.expand_path('../../dist', __FILE__),
   server_start:    Time.now,
@@ -73,5 +74,6 @@ run Travis::Web::App.build(
   code_climate_url: ENV['CODE_CLIMATE_URL'],
   assets_host: ENV['ASSETS_HOST'],
   ajax_polling: ENV['AJAX_POLLING'],
-  github_orgs_oauth_access_settings_url: ENV['GITHUB_ORGS_OAUTH_ACCESS_SETTINGS_URL']
+  github_orgs_oauth_access_settings_url: ENV['GITHUB_ORGS_OAUTH_ACCESS_SETTINGS_URL'],
+  pendo_key: ENV['PENDO_KEY']
 )

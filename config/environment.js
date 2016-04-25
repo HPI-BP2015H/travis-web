@@ -52,6 +52,11 @@ module.exports = function(environment) {
     ]
   };
 
+
+  ENV.sentry = {
+    dsn: 'https://e775f26d043843bdb7ae391dc0f2487a@app.getsentry.com/75334'
+  }
+
   if (typeof process !== 'undefined') {
     if (process.env.TRAVIS_PRO && !process.env.TRAVIS_ENTERPRISE) {
       // set defaults for pro if it's used
@@ -93,6 +98,11 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV['ember-cli-mirage'] = {
+      enabled: false
+    };
+
+    ENV.sentry.development = true;
   }
 
   if (environment === 'test') {
@@ -107,10 +117,13 @@ module.exports = function(environment) {
     ENV.APP.rootElement = '#ember-testing';
 
     ENV.apiEndpoint = '';
+    ENV.statusPageStatusUrl =  null;
   }
 
   if (environment === 'production') {
-
+    ENV['ember-cli-mirage'] = {
+      enabled: false
+    };
   }
 
   // TODO: I insert values from ENV here, but in production
@@ -122,12 +135,12 @@ module.exports = function(environment) {
     'default-src': "'none'",
     'script-src': "'self'",
     'font-src': "'self' https://fonts.googleapis.com/css https://fonts.gstatic.com",
-    'connect-src': "'self' " + ENV.apiEndpoint + " ws://ws.pusherapp.com wss://ws.pusherapp.com http://sockjs.pusher.com https://s3.amazonaws.com/archive.travis-ci.com/ https://s3.amazonaws.com/archive.travis-ci.org/",
-    'img-src': "'self' data: https://www.gravatar.com http://www.gravatar.com",
+    'connect-src': "'self' " + ENV.apiEndpoint + " ws://ws.pusherapp.com wss://ws.pusherapp.com http://sockjs.pusher.com https://s3.amazonaws.com/archive.travis-ci.com/ https://s3.amazonaws.com/archive.travis-ci.org/ app.getsentry.com",
+    'img-src': "'self' data: https://www.gravatar.com http://www.gravatar.com app.getsentry.com",
     'style-src': "'self' https://fonts.googleapis.com",
     'media-src': "'self'",
     'frame-src': "'self' " + ENV.apiEndpoint
-  }
+  };
 
   return ENV;
 };

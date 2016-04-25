@@ -16,6 +16,14 @@ var Serializer = V2FallbackSerializer.extend({
     return result;
   },
 
+  normalizeSingleResponse: function(store, primaryModelClass, payload, id, requestType) {
+    if (payload.commit) {
+      payload.build.commit = payload.commit;
+      delete payload.build.commit_id;
+    }
+    return this._super(...arguments);
+  },
+
   normalizeArrayResponse: function(store, primaryModelClass, payload, id, requestType) {
     var result;
     if (payload.commits) {
@@ -28,7 +36,7 @@ var Serializer = V2FallbackSerializer.extend({
         }
       });
     }
-    return this._super.apply(this, arguments);
+    return this._super(...arguments);
   },
 
   keyForV2Relationship: function(key, typeClass, method) {
@@ -39,7 +47,7 @@ var Serializer = V2FallbackSerializer.extend({
     } else if (key === 'commit') {
       return key;
     } else {
-      return this._super.apply(this, arguments);
+      return this._super(...arguments);
     }
   },
 
@@ -47,7 +55,7 @@ var Serializer = V2FallbackSerializer.extend({
     if (key === 'repo') {
       return 'repository';
     } else {
-      return this._super.apply(this, arguments);
+      return this._super(...arguments);
     }
   },
 

@@ -14,7 +14,7 @@ var Router = Ember.Router.extend({
       // we should probably think about a more general way to
       // do this, location should not know about auth status
       return Location.create({
-        auth: this.container.lookup('service:auth')
+        auth: Ember.getOwner(this).lookup('service:auth')
       });
     }
   }.property(),
@@ -31,7 +31,7 @@ var Router = Ember.Router.extend({
   },
 
   didTransition() {
-    this._super.apply(this, arguments);
+    this._super(...arguments);
     if (config.gaCode) {
       _gaq.push(['_trackPageview', location.pathname]);
     }

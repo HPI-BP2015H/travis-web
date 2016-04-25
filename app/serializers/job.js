@@ -13,7 +13,7 @@ export default V2FallbackSerializer.extend({
     if (key === 'repo') {
       return 'repository_id';
     } else {
-      return this._super.apply(this, arguments);
+      return this._super(...arguments);
     }
   },
 
@@ -23,6 +23,14 @@ export default V2FallbackSerializer.extend({
     }
 
     return this._super(modelClass, resourceHash);
+  },
+
+  normalizeSingleResponse: function(store, primaryModelClass, payload, id, requestType) {
+    if (payload.commit) {
+      payload.job.commit = payload.commit;
+      delete payload.job.commit_id;
+    }
+    return this._super(...arguments);
   },
 
   normalizeArrayResponse: function(store, primaryModelClass, payload, id, requestType) {
@@ -37,7 +45,7 @@ export default V2FallbackSerializer.extend({
         }
       });
     }
-    return this._super.apply(this, arguments);
+    return this._super(...arguments);
   },
 
 

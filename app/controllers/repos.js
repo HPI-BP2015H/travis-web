@@ -49,9 +49,11 @@ var sortCallback = function(repo1, repo2) {
 
 
 
+const { controller, service } = Ember.inject;
+
 var Controller = Ember.Controller.extend({
-  ajax: Ember.inject.service(),
-  updateTimesService: Ember.inject.service('updateTimes'),
+  ajax: service(),
+  updateTimesService: service('updateTimes'),
 
   actions: {
     activate: function(name) {
@@ -76,13 +78,13 @@ var Controller = Ember.Controller.extend({
   possiblyRedirectToGettingStartedPage() {
     return Ember.run.scheduleOnce('routerTransitions', this, function() {
       if (this.get('tab') === 'owned' && this.get('isLoaded') && this.get('repos.length') === 0) {
-        return this.container.lookup('router:main').send('redirectToGettingStarted');
+        return Ember.getOwner(this).lookup('router:main').send('redirectToGettingStarted');
       }
     });
   },
 
   isLoaded: false,
-  repoController: Ember.inject.controller('repo'),
+  repoController: controller('repo'),
   currentUserBinding: 'auth.currentUser',
 
   selectedRepo: function() {
@@ -96,13 +98,14 @@ var Controller = Ember.Controller.extend({
   }.property('startedJobsCount', 'queuedJobs.length'),
 
   init() {
-    this._super.apply(this, arguments);
+    this._super(...arguments);
     if (!Ember.testing) {
       Visibility.every(this.config.intervals.updateTimes, this.updateTimes.bind(this));
     }
   },
 
   runningJobs: function() {
+    if(!this.get('config.pro')) { return []; }
     var result;
 
     result = this.store.filter('job', {}, function(job) {
@@ -114,9 +117,11 @@ var Controller = Ember.Controller.extend({
     });
 
     return result;
-  }.property(),
+  }.property('config.pro'),
 
   queuedJobs: function() {
+    if(!this.get('config.pro')) { return []; }
+
     var result;
     result = this.get('store').filter('job', function(job) {
       return ['created'].indexOf(job.get('state')) !== -1;
@@ -127,7 +132,7 @@ var Controller = Ember.Controller.extend({
     });
 
     return result;
-  }.property(),
+  }.property('config.pro'),
 
   recentRepos: function() {
     return [];

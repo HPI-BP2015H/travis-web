@@ -10,8 +10,10 @@ default_options = {
   }
 };
 
+const { service } = Ember.inject;
+
 export default Ember.Service.extend({
-  auth: Ember.inject.service(),
+  auth: service(),
 
   get(url, callback, errorCallback) {
     return this.ajax(url, 'get', {
@@ -62,24 +64,12 @@ export default Ember.Service.extend({
       options.contentType = options.contentType || 'application/json; charset=utf-8';
     }
     success = options.success || (function() {});
-    options.success = (data, status, xhr) => {
-      if (data != null ? data.flash : void 0) {
-        Travis.lookup('controller:flash').loadFlashes(data.flash);
-      }
-      if (data != null) {
-        delete data.flash;
-      }
+    options.success = function(data, status, xhr) {
       return success.call(this, data, status, xhr);
     };
     error = options.error || function() {};
     options.error = (data, status, xhr) => {
       console.log("[ERROR] API responded with an error (" + status + "): " + (JSON.stringify(data)));
-      if (data != null ? data.flash : void 0) {
-        Travis.lookup('controller:flash').pushObject(data.flash);
-      }
-      if (data != null) {
-        delete data.flash;
-      }
       return error.call(this, data, status, xhr);
     };
 

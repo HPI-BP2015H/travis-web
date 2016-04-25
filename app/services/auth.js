@@ -1,11 +1,13 @@
 import config from 'travis/config/environment';
 import Ember from 'ember';
 
+const { service } = Ember.inject;
+
 export default Ember.Service.extend({
-  store: Ember.inject.service(),
-  storage: Ember.inject.service(),
-  sessionStorage: Ember.inject.service(),
-  ajax: Ember.inject.service(),
+  store: service(),
+  storage: service(),
+  sessionStorage: service(),
+  ajax: service(),
   state: "signed-out",
   receivingEnd: location.protocol + "//" + location.host,
 
@@ -140,7 +142,7 @@ export default Ember.Service.extend({
             data.user.token = user.token;
             this.storeData(data, this.get('sessionStorage'));
             this.storeData(data, this.get('storage'));
-            return Travis.trigger('user:refreshed', data.user);
+            Travis.trigger('user:refreshed', data.user);
           }
         } else {
           return Ember.RSVP.Promise.reject();
@@ -214,7 +216,7 @@ export default Ember.Service.extend({
     //         as a direct response to either manual sign in or autoSignIn (right now
     //         we treat both cases behave the same in terms of sent events which I think
     //         makes it more complicated than it should be).
-    router = this.container.lookup('router:main');
+    router = Ember.getOwner(this).lookup('router:main');
     try {
       return router.send(name);
     } catch (error1) {

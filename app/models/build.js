@@ -2,11 +2,12 @@ import { durationFrom, configKeys, compact } from 'travis/utils/helpers';
 import configKeysMap from 'travis/utils/keys-map';
 import Ember from 'ember';
 import Model from 'travis/models/model';
-import DurationCalculations from 'travis/utils/duration-calculations';
+import DurationCalculations from 'travis/mixins/duration-calculations';
 import Config from 'travis/config/environment';
 import attr from 'ember-data/attr';
 import { hasMany, belongsTo } from 'ember-data/relationships';
 
+const { service } = Ember.inject;
 var Build;
 
 if (Config.useV3API) {
@@ -21,7 +22,7 @@ if (Config.useV3API) {
 }
 
 Build.reopen({
-  ajax: Ember.inject.service(),
+  ajax: service(),
   state: attr(),
   number: attr('number'),
   message: attr('string'),
@@ -119,7 +120,7 @@ Build.reopen({
   }.property('rawConfigKeys.length'),
 
   canCancel: function() {
-    return this.get('jobs').filterBy('canCancel').length;
+    return this.get('jobs').filterBy('canCancel', true).length;
   }.property('jobs.@each.canCancel', 'jobs', 'jobs.[]'),
 
   canRestart: Ember.computed.alias('isFinished'),
@@ -129,7 +130,7 @@ Build.reopen({
   },
 
   restart() {
-    return this.get('ajax').post("/builds/" + (this.get('id')) + "/restart");
+    return this.get('ajax').post(`/builds/${this.get('id')}/restart`);
   },
 
   formattedFinishedAt: function() {
