@@ -100,7 +100,7 @@ export default Ember.Component.extend({
       d3.selectAll("#build_history_chart").remove();
 
       // margin for axes
-      var margin = {top: 20, right: 20, bottom: 30, left: 60},
+      var margin = {top: 30, right: 20, bottom: 30, left: 60},
       fullWidth = 1000,
       fullHeight = 200,
       marginWidth = fullWidth - margin.left - margin.right,
@@ -151,16 +151,19 @@ export default Ember.Component.extend({
       .call(xAxis);
 
       // add y axis
-      svg.append("g")
+      var yAxisGroup = svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
+
+      var yAxisLabel = yAxisGroup.append("g")
+      .attr("class", "axis-label")
       .append("text")
-      .attr("transform", "rotate(90)")
-      .attr("y", 30)
-      .attr("x", 0.5*marginHeight)
-      .attr("dy", "1.5em")
-      .style("text-anchor", "middle")
+      .attr("x", -margin.left)
+      .attr("y", -margin.top)
+      .attr("dy", "1.0em")
       .text("builds");
+
+      yAxisLabel.attr("dx", yAxisLabel.node().getBBox().width);
 
       // helper function to prevent loosing the focus
       d3.selection.prototype.moveToFront = function() {

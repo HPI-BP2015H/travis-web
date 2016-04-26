@@ -42,7 +42,7 @@ export default Ember.Component.extend({
     var json = this.get("json");
 
     // margin for axes
-    var margin = {top: 30, right: 20, bottom: 40, left: 80},
+    var margin = {top: 30, right: 20, bottom: 30, left: 60},
     height = 200,
     width = 1000,
     fullWidth = width + margin.left + margin.right,
@@ -103,10 +103,12 @@ export default Ember.Component.extend({
     var yAxisLabel = yAxisGroup.append("g")
     .attr("class", "axis-label")
     .append("text")
-    .attr("x", -yAxis.tickSize()-yAxis.tickPadding())
+    .attr("x", -margin.left)
     .attr("y", -margin.top)
     .attr("dy", "1.0em")
     .text("duration / s");
+
+    yAxisLabel.attr("dx", yAxisLabel.node().getBBox().width);
 
     var barMouseOver = function() {
       // create tooltip
