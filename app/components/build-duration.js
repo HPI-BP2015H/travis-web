@@ -42,7 +42,7 @@ export default Ember.Component.extend({
     var json = this.get("json");
 
     // margin for axes
-    var margin = {top: 20, right: 20, bottom: 40, left: 80},
+    var margin = {top: 30, right: 20, bottom: 40, left: 80},
     height = 200,
     width = 1000,
     fullWidth = width + margin.left + margin.right,
@@ -62,6 +62,7 @@ export default Ember.Component.extend({
     var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
+    .outerTickSize(0)
     .ticks(6);
 
     // set up pane
@@ -104,7 +105,7 @@ export default Ember.Component.extend({
     .append("text")
     .attr("x", -yAxis.tickSize()-yAxis.tickPadding())
     .attr("y", -margin.top)
-    .attr("dy", "1em")
+    .attr("dy", "1.0em")
     .text("duration / s");
 
     var barMouseOver = function() {
