@@ -101,10 +101,10 @@ export default Ember.Component.extend({
 
       // margin for axes
       var margin = {top: 30, right: 20, bottom: 30, left: 60},
-      fullWidth = 1000,
-      fullHeight = 200,
-      marginWidth = fullWidth - margin.left - margin.right,
-      marginHeight = fullHeight - margin.top - margin.bottom;
+      marginWidth = 1000,
+      marginHeight = 200,
+      fullWidth = marginWidth + margin.left + margin.right,
+      fullHeight = marginHeight + margin.top + margin.bottom;
 
       var x = d3.scale.ordinal()
       .rangeRoundBands([0, marginWidth], 0.1);
