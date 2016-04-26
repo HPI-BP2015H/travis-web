@@ -1,3 +1,7 @@
+// pale color vars
+$pale-green: #a2d291
+$pale-red: #f8a89d
+
 .overview-section
   padding: 0 0 1em
   margin-bottom: 1em
@@ -40,11 +44,11 @@
 // states
 
 .passed
-  fill: $turf-green
+  fill: $pale-green
 .started, .queued, .booting, .received, .created
   fill: $canary-yellow
 .failed, .errored
-  fill: $brick-red
+  fill: $pale-red
 .canceled
   fill: $cement-grey
 
