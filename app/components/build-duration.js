@@ -43,8 +43,8 @@ export default Ember.Component.extend({
 
     // margin for axes
     var margin = {top: 20, right: 20, bottom: 40, left: 80},
+    height = 400,
     width = 400,
-    height = 20 * json.build_duration.length,
     fullWidth = width + margin.left + margin.right,
     fullHeight = height + margin.top + margin.bottom;
 
@@ -52,17 +52,17 @@ export default Ember.Component.extend({
     .rangeRoundBands([0, width], 0.6);
 
     var y = d3.scale.linear()
-    .range([0, height]);
+    .range([height, 0]);
 
     var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .outerTickSize(0)
-    .ticks(6);
+    .outerTickSize(0);
 
     var yAxis = d3.svg.axis()
     .scale(y)
-    .orient("left");
+    .orient("left")
+    .ticks(6);
 
     // set up pane
     var svg = d3.select(".build-duration")
