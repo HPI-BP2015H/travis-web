@@ -43,8 +43,8 @@ export default Ember.Component.extend({
 
     // margin for axes
     var margin = {top: 20, right: 20, bottom: 40, left: 80},
-    height = 400,
-    width = 400,
+    height = 200,
+    width = 1000,
     fullWidth = width + margin.left + margin.right,
     fullHeight = height + margin.top + margin.bottom;
 
