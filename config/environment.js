@@ -39,13 +39,18 @@ module.exports = function(environment) {
       'pull_request',
       'cron'
     ],
-    // status of not currently running builds:
-    // (without started, queued, booting, received, and created)
-    travisStatuses: [
+    finalStatuses: [
       'passed',
       'failed',
       'errored',
       'canceled'
+    ],
+    activeStatuses: [
+      'started',
+      'queued',
+      'booting',
+      'received',
+      'created'
     ]
   };
 

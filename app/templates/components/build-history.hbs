@@ -8,3 +8,10 @@
     </div>
   {{/if}}
 </div>
+{{#if isLoading}}
+  {{loading-indicator inline=true}}
+{{else}}
+  <div class="builds-running">
+    There are currently {{buildsRunning}} builds running.
+  </div>
+{{/if}}

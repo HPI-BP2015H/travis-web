@@ -5,7 +5,8 @@ import config from 'travis/config/environment';
 export default Ember.Component.extend({
   isLoading: true,
   json: {},
-  statuses: config.travisStatuses,
+  finalStatuses: config.finalStatuses,
+  activeStatuses: config.activeStatuses,
 
   load: function() {
     // set flag to show loading indicator instead of drawing the chart
@@ -45,8 +46,8 @@ export default Ember.Component.extend({
     for(var i=0; i<daysToDisplay; i++) {
       // create object with status variables set to zero
       var current = {};
-      for (var j = 0; j < this.get("statuses").length; j++) {
-        current[this.get("statuses")[j]] = 0;
+      for (var j = 0; j < this.get("finalStatuses").length; j++) {
+        current[this.get("finalStatuses")[j]] = 0;
       }
 
       // create current dayStrings
@@ -61,9 +62,9 @@ export default Ember.Component.extend({
 
       // if dayStringISO in json: update status variables
       if (dayStringISO in json.recent_build_history) {
-        for (j = 0; j < this.get("statuses").length; j++) {
-          if(this.get("statuses")[j] in json.recent_build_history[dayStringISO]) {
-            current[this.get("statuses")[j]] = json.recent_build_history[dayStringISO][this.get("statuses")[j]];
+        for (j = 0; j < this.get("finalStatuses").length; j++) {
+          if(this.get("finalStatuses")[j] in json.recent_build_history[dayStringISO]) {
+            current[this.get("finalStatuses")[j]] = json.recent_build_history[dayStringISO][this.get("finalStatuses")[j]];
           }
         }
       }
@@ -78,8 +79,8 @@ export default Ember.Component.extend({
     var result = [];
     for(var i=0; i<data.length; i++) {
       var noBuilds = true;
-      for(var j=0; j<this.get("statuses").length; j++) {
-        if(data[i][this.get("statuses")[j]] > 0) {
+      for(var j=0; j<this.get("finalStatuses").length; j++) {
+        if(data[i][this.get("finalStatuses")[j]] > 0) {
           noBuilds = false;
         }
       }
@@ -155,8 +156,8 @@ export default Ember.Component.extend({
       x.domain(data.map(function(d) { return d.date; }));
       y.domain([0, d3.max(data, function(d) {
         var result = 0;
-        for (var i = 0; i < self.get("statuses").length; i++) {
-          result += d[self.get("statuses")[i]];
+        for (var i = 0; i < self.get("finalStatuses").length; i++) {
+          result += d[self.get("finalStatuses")[i]];
         }
         return result;
       })]);
@@ -195,7 +196,7 @@ export default Ember.Component.extend({
       };
 
       var yAttr = function(d) {
-        var result = y(d[self.get("statuses")[i]]);
+        var result = y(d[self.get("finalStatuses")[i]]);
         for (var j = 0; j < drawnStatuses.length; j++) {
           result += y(d[drawnStatuses[j]]) - marginHeight;
         }
@@ -211,13 +212,13 @@ export default Ember.Component.extend({
       };
 
       var heightAttr = function(d) {
-        var result = marginHeight - y(d[self.get("statuses")[i]]);
+        var result = marginHeight - y(d[self.get("finalStatuses")[i]]);
         result = result > 0 ? result + 1 : 0; // to avoid white lines
         return result;
       };
 
       var hovertext = function(d) {
-        return d[self.get("statuses")[i]] + " " + self.get("statuses")[i];
+        return d[self.get("finalStatuses")[i]] + " " + self.get("finalStatuses")[i];
       };
 
       var barMouseOver = function() {
@@ -281,11 +282,11 @@ export default Ember.Component.extend({
 
       // add bars for every status
       var drawnStatuses = [];
-      for (var i = 0; i < self.get("statuses").length; i++) {
-        svg.selectAll("." + self.get("statuses")[i])
+      for (var i = 0; i < self.get("finalStatuses").length; i++) {
+        svg.selectAll("." + self.get("finalStatuses")[i])
         .data(data)
         .enter().append("rect")
-        .attr("class", self.get("statuses")[i])
+        .attr("class", self.get("finalStatuses")[i])
         .attr("x", xAttr)
         .attr("width", x.rangeBand())
         .attr("y", yAttr)
@@ -294,7 +295,7 @@ export default Ember.Component.extend({
         .on("mouseover", barMouseOver)
         .on("mouseout", barMouseOut);
 
-        drawnStatuses.push(self.get("statuses")[i]);
+        drawnStatuses.push(self.get("finalStatuses")[i]);
       }
 
       // add "no builds" caption for every day without a builds
@@ -313,5 +314,19 @@ export default Ember.Component.extend({
       return "";
     }
     return drawChart(self.get("json"));
+  }.property("repo", "isLoading"),
+
+  buildsRunning: function() {
+    var data = this.get("json");
+    var result = 0;
+
+    for(var i=0; i<data.length; i++) {
+      for(var j=0; j<this.get("activeStatuses").length; j++) {
+        if(data[i][this.get("activeStatuses")[j]] !== undefined) {
+          result += data[i][this.get("activeStatuses")[j]];
+        }
+      }
+    }
+    return result;
   }.property("repo", "isLoading")
 });
