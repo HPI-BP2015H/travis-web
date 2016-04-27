@@ -73,6 +73,23 @@ export default Ember.Component.extend({
     return result;
   },
 
+  noBuildDays(data) {
+    // returns data, but only those elements (days) that do not contain builds
+    var result = [];
+    for(var i=0; i<data.length; i++) {
+      var noBuilds = true;
+      for(var j=0; j<this.get("statuses").length; j++) {
+        if(data[i][this.get("statuses")[j]] > 0) {
+          noBuilds = false;
+        }
+      }
+      if(noBuilds) {
+        result.push(data[i]);
+      }
+    }
+    return result;
+  },
+
   draw: function() {
 
     // abort drawing if there are no data
@@ -153,7 +170,7 @@ export default Ember.Component.extend({
       // add y axis
       var yAxisGroup = svg.append("g")
       .attr("class", "y axis")
-      .call(yAxis)
+      .call(yAxis);
 
       var yAxisLabel = yAxisGroup.append("g")
       .attr("class", "axis-label")
@@ -183,6 +200,14 @@ export default Ember.Component.extend({
           result += y(d[drawnStatuses[j]]) - marginHeight;
         }
         return result;
+      };
+
+      var xAttrNoBuilds = function(d) {
+        return x(d.date) + x.rangeBand()/2;
+      };
+
+      var yAttrNoBuilds = function(d) {
+        return marginHeight;
       };
 
       var heightAttr = function(d) {
@@ -271,6 +296,19 @@ export default Ember.Component.extend({
 
         drawnStatuses.push(self.get("statuses")[i]);
       }
+
+      // add "no builds" caption for every day without a builds
+      var noBuildDays = self.noBuildDays(data);
+      var noBuildCaptions = svg.selectAll(".no-builds-label")
+      .data(noBuildDays)
+      .enter().append("text")
+      .attr("class", "no-builds-label")
+      .attr("x", xAttrNoBuilds)
+      .attr("y", yAttrNoBuilds)
+      .attr("dy", "-0.25em")
+      .text("no builds");
+
+      noBuildCaptions.attr("dx", -noBuildCaptions.node().getBBox().width/2);
 
       return "";
     }
