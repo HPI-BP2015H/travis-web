@@ -13,24 +13,6 @@ $pale-red: #f8a89d
 
 // container
 
-.chart-row
-  width: 100%
-  text-align: center
-
-.chart-container
-  margin: 0 1% 0 1%
-  width: 45%
-  display: inline-block
-  vertical-align: middle
-  @media (max-width: 800px)
-    display: block
-    width: 70%
-    margin: 0 auto 0 auto
-  @media (max-width: 640px)
-    display: block
-    width: 90%
-    margin: 0 auto 0 auto
-
 .svg-container
   display: inline-block
   position: relative
@@ -97,16 +79,7 @@ $pale-red: #f8a89d
     stroke: $oxide-blue
     fill: transparent
 
-.pie-header
-  fill: $asphalt-grey
-  font-size: $font-size-sm
-  @include chartFontEnlargement
-
 // misc chart parts
-
-.pie-piece
-  stroke: $pebble-grey
-  stroke-width: 2px
 
 .duration-avg
   stroke-width: 1
@@ -127,27 +100,3 @@ p.streak-sentence
 
 span.streak-highlighted
   font-size: $font-size-ml
-
-.branch-batch
-  font-size: $font-size-m
-  border: 1px solid $cement-grey
-  margin: 0 12px 12px 0
-  display: inline-block
-
-.branch-batch-name, .branch-batch-value
-  height: 100%
-  border: 0px
-  display: inline-block
-
-.branch-batch-name
-  padding: 3px 12px
-  border-right: 1px solid $cement-grey
-
-.branch-batch-value
-  padding: 3px 6px
-
-.batch-green
-  background: $seed-green
-
-.batch-red
-  background: $quartz-red
