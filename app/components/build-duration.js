@@ -34,6 +34,14 @@ export default Ember.Component.extend({
     return "";
   }.property("repo"),
 
+  avg(json) {
+    var sum = 0;
+    for(var i=0; i<json.build_duration.length; i++) {
+      sum += json.build_duration[i].duration;
+    }
+    return sum / json.build_duration.length;
+  },
+
   draw: function() {
     // another cleanup, just in case
     d3.select("#build_duration_chart").remove();
@@ -176,5 +184,14 @@ export default Ember.Component.extend({
     .on("mouseover", barMouseOver)
     .on("mouseout" , barMouseOut )
     .on("mousemove", barMouseMove);
+
+    // draw average line
+    svg.append("svg:line")
+    .attr("x1", 0)
+    .attr("x2", width)
+    .attr("y1", height-y(self.avg(json)))
+    .attr("y2", height-y(self.avg(json)))
+    .attr("class", "duration-avg");
+
   }.property("repo", "isLoading")
 });
