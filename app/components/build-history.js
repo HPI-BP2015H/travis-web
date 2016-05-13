@@ -95,7 +95,7 @@ export default Ember.Component.extend({
 
     // abort drawing if there are no data
     if (this.get("json").length === 0) {
-      return "<span class=\"no-builds-caption\">No builds in last 10 days.</h2>";
+      return "<span class=\"build-history-span\">No builds in last 10 days.</h2>";
     }
 
     var self = this;
