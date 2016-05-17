@@ -3,12 +3,19 @@ import config from 'travis/config/environment';
 
 export default Ember.Component.extend({
   classNames: ['streak-row'],
+  isLoading: true,
+  streak: {},
+  history: {},
 
-  getStreakData: function() {
-    var result, apiEndpoint, options, repoId;
+  load: function() {
+    var apiEndpoint, options, repoId, self, streakLoaded, historyLoaded;
+    streakLoaded = false;
+    historyLoaded = false;
+    self = this;
+    self.set("isLoading", true);
+
     apiEndpoint = config.apiEndpoint;
     repoId = this.get('repo.id');
-    result = Ember.ObjectProxy.create();
     options = {};
     if (this.get('auth.signedIn')) {
       options.headers = {
@@ -16,9 +23,23 @@ export default Ember.Component.extend({
       };
     }
     $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/streak", options).then(function(response) {
-      return result.set('content', Ember.Object.create(response));
+      self.set("streak", response.streak);
+      if(historyLoaded) {
+        self.set("isLoading", false);
+      } else {
+        streakLoaded = true;
+      }
     });
-    return result;
+    $.ajax(apiEndpoint + "/v3/repo/" + repoId + "/overview/history", options).then(function(response) {
+      console.log
+      self.set("history", response.history);
+      if(streakLoaded) {
+        self.set("isLoading", false);
+      } else {
+        historyLoaded = true;
+      }
+    });
+    return "";
   }.property('repo')
 
 });
